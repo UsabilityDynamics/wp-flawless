@@ -12,14 +12,14 @@
  */
  
   //** Check if this post type support comments */
-  if(!post_type_supports( get_queried_object()->post_type , 'comments' )) {
+  if(!post_type_supports($post->post_type, 'comments')) {
     return;
   }
 
-  if(!empty($flawless['wp_crm']['inquiry_forms'][$property['property_type']])) {
+  if(!empty($fs['wp_crm']['inquiry_forms'][$property['property_type']])) {
     global $wp_crm;
 
-    $contact_form = $flawless['wp_crm']['inquiry_forms'][$property['property_type']];
+    $contact_form = $fs['wp_crm']['inquiry_forms'][$property['property_type']];
 
     if($contact_form != 'flawless_default_form') {
 

@@ -14,8 +14,8 @@
 
 <?php do_action( 'bp_before_activity_entry' ); ?>
 
-<li class="<?php bp_activity_css_class(); ?> cfct-block list-item" id="activity-<?php bp_activity_id(); ?>">
-  <div class="<?php flawless_module_class( '' ); ?>">
+<li class="<?php bp_activity_css_class(); ?> column-block list-item" id="activity-<?php bp_activity_id(); ?>">
+  <div class="column-module">
   
     <div class="activity-avatar item-avatar">
       <a href="<?php bp_activity_user_link(); ?>"><?php bp_activity_avatar(); ?></a>
@@ -24,7 +24,9 @@
     <div class="item-content activity-content">
 
       <div class="activity-header">
+
         <?php bp_activity_action(); ?>
+
       </div>
 
       <?php if ( 'activity_comment' == bp_get_activity_type() ) : ?>
@@ -115,7 +117,7 @@
 
     <?php do_action( 'bp_after_activity_entry_comments' ); ?>
     
-  </div><?php /* .cfct-module */ ?>
+  </div><?php /* .column-module */ ?>
 </li><?php /* .list-item */ ?>
 
 <?php do_action( 'bp_after_activity_entry' ); ?>

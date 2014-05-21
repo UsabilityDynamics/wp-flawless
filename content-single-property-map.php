@@ -45,15 +45,8 @@
 
 ?>
 
-<div class="formatted-row row-fluid">
-  <div class="span12">
-    <div class="cfct-module">
-      <div class="property_map_wrapper">
-        <div id="<?php echo $this_map_dom_id; ?>" class="" style="width:<?php echo $map_width; ?>; height:<?php echo $map_height; ?>"></div>
-      </div>
-    </div>
-  </div>
-</div>
+
+<div class="property_map_wrapper"><div id="<?php echo $this_map_dom_id; ?>" class="" style="width:<?php echo $map_width; ?>; height:<?php echo $map_height; ?>"></div></div>
 
 <?php ob_start(); ?>
 
@@ -67,7 +60,7 @@
       jQuery("#<?php echo $this_map_dom_id; ?>").hide();
       jQuery("#<?php echo $this_map_dom_id; ?>").closest(".property_map_wrapper").hide();
 
-      if(flawless.developer) {
+      if(flawless_config.developer) {
         console.log("Google Maps not loaded - propety map removed.");
       }
     }

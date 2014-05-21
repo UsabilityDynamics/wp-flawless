@@ -3,7 +3,7 @@
 		echo '<h2 class="cfct-mod-title">'.esc_html($title).'</h2>';
 	}
 ?>
-<div class="cfct-mod-content">
+<div class="cfct-mod-content loop post-listing cf">
 	<?php 
 		echo $content; 
 		

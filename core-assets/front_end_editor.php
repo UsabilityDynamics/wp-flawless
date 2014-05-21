@@ -1,26 +1,15 @@
 <?php
 /**
- * Name: Flawless Front End Editor
- * Version: 1.0
- * Description: Adds Layout editor to front-end.
- * Author: Usability Dynamics, Inc.
- * Theme Feature: frontend-editor
- *
- */
+  * Name: Flawless Front End Editor
+  * Description: Adds Layout editor to front-end.
+  * Author: Usability Dynamics, Inc.
+  * Version: 1.0
+  *
+  */
 
-add_action( 'flawless::theme_setup::after', array( 'flawless_front_end_editor', 'flawless_theme_setup' ), 200 );
-add_filter( 'flawless::available_theme_features', array( 'flawless_front_end_editor','available_theme_features' ) );
+add_action( 'flawless_theme_setup', array( 'flawless_front_end_editor', 'flawless_theme_setup' ), 200);
 
 class flawless_front_end_editor {
-
-  /**
-   * {}
-   *
-   */
-  function available_theme_features( $features ) {
-    $features[ 'frontend-editor' ] = true;
-    return $features;
-  }
 
   /**
     * {missing description}
@@ -29,18 +18,14 @@ class flawless_front_end_editor {
     */
   static function flawless_theme_setup() {
 
-    if( !current_theme_supports( 'frontend-editor' ) ) {
-      return;
+    if(current_user_can( 'manage_options' )) {
+      add_action( 'admin_bar_menu', array( 'flawless_front_end_editor', 'admin_bar_menu' ), 200);
+      add_action( 'flawless_ajax_action', array( 'flawless_front_end_editor', 'flawless_ajax_action' ), 200, 2);
+      add_action( 'flawless::extra_local_assets', array( 'flawless_front_end_editor', 'wp_enqueue_editor_scripts' ), 100);
     }
 
-    if( current_user_can( 'manage_options' ) ) {
-      add_action( 'admin_bar_menu', array( 'flawless_front_end_editor', 'admin_bar_menu' ), 200 );
-      add_action( 'flawless_ajax_action', array( 'flawless_front_end_editor', 'flawless_ajax_action' ), 200, 2 );
-      add_action( 'flawless::extra_local_assets', array( 'flawless_front_end_editor', 'wp_enqueue_editor_scripts' ), 100 );
-    }
-
-    add_action( 'flawless::extra_local_assets', array( 'flawless_front_end_editor', 'extra_local_assets' ), 100 );
-    add_filter( 'parse_request', array( 'flawless_front_end_editor', 'parse_request' ) );
+    add_action( 'flawless::extra_local_assets', array( 'flawless_front_end_editor', 'extra_local_assets' ), 100);
+    add_filter( 'parse_request', array( 'flawless_front_end_editor', 'parse_request' ));
 
   }
 
@@ -49,11 +34,11 @@ class flawless_front_end_editor {
     *
     * @since Flawless 2.1
     */
-  function parse_request( $query ) {
+  function parse_request($query) {
    global $wp, $wp_query;
 
-   if( $query->request == 'flawless-flex-styles.css' || $_GET[ 'flawless_asset' ] == 'flawless-flex-styles.css' ) {
-      add_action( 'wp', create_function( '', 'status_header( 200 );' ) );
+   if( $query->request == 'flawless-flex-styles.css' || $_GET['flawless_asset'] == 'flawless-flex-styles.css' ) {
+      add_action( 'wp', create_function( '', 'status_header( 200 );' ));
       die( flawless_front_end_editor::flawless_flex_styles() );
     }
 
@@ -69,8 +54,8 @@ class flawless_front_end_editor {
     wp_enqueue_script( 'jquery-ui-draggable' );
     wp_enqueue_script( 'jquery-ui-sortable' );
     wp_enqueue_script( 'jquery-ui-resizable' );
-    wp_enqueue_script( 'jquery-ud-toolbar_status',  get_bloginfo( 'template_url' ) . '/js/jquery.ud.toolbar_status.js', array( 'jquery' ), Flawless_Version, true );
-    wp_enqueue_script( 'jquery-ud-frontend_editor',  get_bloginfo( 'template_url' ) . '/js/jquery.ud.frontend_editor.js', array( 'jquery' ), Flawless_Version, true );
+    wp_enqueue_script( 'jquery-ud-toolbar_status',  get_bloginfo( 'template_url' ) . '/js/jquery.ud.toolbar_status.js', array( 'jquery' ), Flawless_Version, true);
+    wp_enqueue_script( 'jquery-ud-frontend_editor',  get_bloginfo( 'template_url' ) . '/js/jquery.ud.frontend_editor.js', array( 'jquery' ), Flawless_Version, true);
 
     wp_enqueue_style( 'flawless-live-editor', get_bloginfo( 'template_url' ) . '/css/flawless-live-editor.css', array(), Flawless_Version, 'screen' );
 
@@ -85,7 +70,8 @@ class flawless_front_end_editor {
     */
   function extra_local_assets() {
 
-    if( get_option( 'permalink_structure' ) != '' ) {
+    /* disabled permalink style odokienko@UD */
+    if( 0 && get_option( 'permalink_structure' ) != '' ) {
       wp_enqueue_style( 'flawless-flex-styles', get_bloginfo( 'url' ) . '/flawless-flex-styles.css', array(), Flawless_Version, 'all' );
     } else {
       wp_enqueue_style( 'flawless-flex-styles', get_bloginfo( 'url' ) . '/?flawless_asset=flawless-flex-styles.css', array(), Flawless_Version, 'all' );
@@ -99,7 +85,7 @@ class flawless_front_end_editor {
     *
     * @since Flawless 2.1
     */
-  static function admin_bar_menu( $wp_admin_bar ) {
+  static function admin_bar_menu($wp_admin_bar) {
 
     if ( current_user_can( 'manage_options' ) && !is_admin() ) {
 
@@ -126,23 +112,23 @@ class flawless_front_end_editor {
   function flawless_flex_styles() {
     global $flawless;
 
-    $flawless[ 'flex_layout' ] = array_filter( ( array ) $flawless[ 'flex_layout' ] );
-
-    foreach( ( array ) $flawless[ 'flex_layout' ][ 'containers' ] as $type => $css ) {
-      $return[] = 'div.flawless_dynamic_area[container_type="' . $type . '"] { ' . $css . ' } ';
+    $flawless['flex_layout'] = array_filter( $flawless['flex_layout'] );
+    
+    foreach( (array) $flawless['flex_layout']['containers'] as $type => $css ) {
+      $return[] = '.flawless_dynamic_area[container_type="' . $type . '"] { ' . $css . ' } ';
     }
 
-    foreach( ( array ) $flawless[ 'flex_layout' ][ 'modules' ] as $element_hash => $css ) {
-      $return[] = 'div.flawless_module[element_hash="' . $element_hash . '"] { ' . $css . ' } ';
+    foreach( (array) $flawless['flex_layout']['modules'] as $element_hash => $css ) {
+      $return[] = '.flawless_module[element_hash="' . $element_hash . '"] { ' . $css . ' } ';
     }
 
     header ( 'content-type: text/css; charset: UTF-8' );
     header ( 'cache-control: must-revalidate' );
-    header ( 'expires: ' . gmdate ( 'D, d M Y H:i:s', time() + 60 * 60 ) . ' GMT' );
+    header ( 'expires: ' . gmdate ('D, d M Y H:i:s', time() + 60 * 60) . ' GMT');
 
-    $output = '@media ( min-width: 980px ) { ' . implode( "\n", ( array ) $return ) . '} ';
+    $output = '@media (min-width: 980px ) { ' . implode( "\n", (array) $return) . '} ';
 
-    return apply_filters( 'flawless_css_output', $output );
+    echo apply_filters( 'flawless_css_output', $output);
 
   }
 
@@ -152,21 +138,21 @@ class flawless_front_end_editor {
     *
     * @since Flawless 2.1
     */
-  function flawless_ajax_action( $default, $flawless ) {
+  function flawless_ajax_action($default, $flawless) {
 
-    switch( $_REQUEST[ 'the_action' ] ) {
+    switch($_REQUEST['the_action']) {
 
       case 'save_front_end_layout':
 
         $flawless[ 'flex_layout' ] = $_REQUEST[ 'styles' ];
 
-        if( !empty( $flawless[ 'flex_layout' ] ) ) {
-          update_option( 'flawless_settings', $flawless );
-          return array( 'success' => true );
+        if( !empty( $flawless['flex_layout'] ) ) {
+          update_option( 'flawless_settings', $flawless);
+          return array( 'success' => true);
 
         } else {
 
-          return array( 'success' => false );
+          return array( 'success' => false);
 
         }
 
@@ -174,8 +160,8 @@ class flawless_front_end_editor {
 
       case 'delete_flex_settings':
 
-        $flawless[ 'flex_layout' ] = array();
-        update_option( 'flawless_settings', $flawless );
+        $flawless['flex_layout'] = array();
+        update_option( 'flawless_settings', $flawless);
 
         return array(
           'success' => true,

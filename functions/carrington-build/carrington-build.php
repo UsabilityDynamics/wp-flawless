@@ -17,14 +17,14 @@
 */
 
 // Constants
-define('CFCT_BUILD_VERSION', '1.2.3');
+define('CFCT_BUILD_VERSION', '1.2.2');
 define('CFCT_BUILD_POSTMETA', '_cfct_build_data');
 define('CFCT_BUILD_TEMPLATES', 'cfct_build_templates');
 define('CFCT_POST_DATA', 'cfct_build');
 define('CFCT_POST_CONTENT_MARKER', '<!--CFCT-BD-->'); // intentionally obtuse to avoid search matches
 
 define('CFCT_BUILD_TAXONOMY_LANDING', true);
-define('CFCT_BUILD_DEBUG', false);
+define('CFCT_BUILD_DEBUG', $flawless['developer_mode'] == 'true' ? true : false );
 define('CFCT_BUILD_DEBUG_ERROR_LOG', false);
 define('CFCT_BUILD_DEBUG_DISPLAY_ERRORS', false);
 
@@ -88,27 +88,27 @@ function cfct_object_init() {
 			
 	if (!defined('CFCT_BUILD_DISABLE') || defined('CFCT_BUILD_DISABLE') && CFCT_BUILD_DISABLE != true) {
 		// Includes
-		include( 'lib/cfct-json/cfct-json.php' );
-		include( 'lib/wp-revision-manager/cf-revision-manager.php' );
+		include('lib/cfct-json/cfct-json.php');
+		include('lib/wp-revision-manager/cf-revision-manager.php');
 		if (defined('CFCT_BUILD_TAXONOMY_LANDING') && CFCT_BUILD_TAXONOMY_LANDING) {
-			include( 'lib/wp-taxonomy-landing/taxonomy-landing.php' );
+			include('lib/wp-taxonomy-landing/taxonomy-landing.php');
 		}
-		include( 'classes/message.class.php' );
-		include( 'classes/template.class.php' );
-		include( 'classes/common.class.php' );
-		include( 'classes/row.class.php' );
-		include( 'classes/default-rows.class.php' );
-		include( 'classes/module-utility.class.php' );
-		include( 'classes/module.class.php' );
-		include( 'classes/module-options.php' );
-		include( 'classes/module-multi-base.php' );
-		include( 'classes/default-modules.class.php' );
-		include( 'classes/admin.class.php' );
-		include( 'classes/build.class.php' );
-		include( 'classes/exception.class.php' );
+		include('classes/message.class.php');
+		include('classes/template.class.php');
+		include('classes/common.class.php');
+		include('classes/row.class.php');
+		include('classes/default-rows.class.php');
+		include('classes/module-utility.class.php');
+		include('classes/module.class.php');
+		include('classes/module-options.php');
+		include('classes/module-multi-base.php');
+		include('classes/default-modules.class.php');
+		include('classes/admin.class.php');
+		include('classes/build.class.php');
+		include('classes/exception.class.php');
 		if (CFCT_BUILD_DEBUG) {
-			include( 'classes/debug.class.php' );
-			include( 'classes/tests.php' );
+			include('classes/debug.class.php');
+			include('classes/tests.php');
 		}
 			
 		if (is_admin()) {
@@ -549,7 +549,7 @@ if (is_admin() && !empty($_GET['cfct-upgrade-postmeta'])) {
 // Deploy
 
 function cfct_build_register_deploy_extras() {
-	include( 'lib/cf-deploy/cfct-deploy.php' );
+	include('lib/cf-deploy/cfct-deploy.php');
 }
 add_action('cfd_admin_init', 'cfct_build_register_deploy_extras');
 

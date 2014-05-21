@@ -643,9 +643,6 @@ cfct_builder.addModuleLoadCallback("'.$this->id_base.'", function(form) {
 		if (empty($this->url)) {
 			global $cfct_build;
 			$url = $cfct_build->get_module_url($this->basename);
-			
-			$url = str_replace( 'discodonniepresents.comthemes', 'discodonniepresents.com/themes', $url );
-			
 			$this->url = apply_filters('cfct-module-'.$this->id_base.'-url', $url, $this->basename);
 		}
 		return $this->url;

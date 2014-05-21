@@ -7,28 +7,12 @@
   */
 
 
-  .navbar-fixed-top .flawless_color_schemes {
-    width: 500px;
-  }
-
-  .navbar-fixed-top .flawless_color_schemes li.flawless_setup_option_block {
-    display: block;
-    float: left;
-    margin: 10px;
-    border: 1px solid #DCDCDC;
-  }
-  
-  .navbar-fixed-top .flawless_color_schemes li.flawless_setup_option_block .checkbox,
-  .navbar-fixed-top .flawless_color_schemes li.flawless_setup_option_block .option_note {
-    display: none;
-  }
-
   /* Editor Helpers Begin { */
 
-  /* Add bottom margin to footer section so there is room below it to resize */
-  .flawless_dynamic_area[container_type="footer"].editable_container {
-    margin-bottom: 50px;
-  }
+    /* Add bottom margin to footer section so there is room below it to resize */
+    .flawless_dynamic_area[container_type="footer"].editable_container {
+      margin-bottom: 50px;
+    }
 
   /* Editor Helpers End } */
 

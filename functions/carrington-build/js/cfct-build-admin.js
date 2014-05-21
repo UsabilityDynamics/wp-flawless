@@ -5,6 +5,27 @@
 	cfctAdminEditInit = function() {
 		// process UI tabs
 		var cfctInitialActiveTab = null;
+		$('#cfct-build-tabs li a',cfct_build).each(function() {
+			var _this = $(this);
+			// add click event to tab
+			_this.click(function() {
+				cfctTabSwitch(_this);
+				return false;
+			});
+
+			// handle visual editor disabled
+			var contentDiv = _this.attr('href') == '#postdiv'
+				? '#postdivrich'
+				: _this.attr('href');
+			var _thisHref = $(contentDiv);
+
+			// hide tab content if its not the active tab
+			if (_this.parents('li').hasClass('active')) {
+				_thisHref.show();
+				cfctInitialActiveTab = _this.attr('href');
+			}
+		});
+		cfctPrepMediaGallery(cfctInitialActiveTab == '#cfct-build-data' ? 'build' : 'wordpress');
 		
 		// init sortables
 		$('#cfct-sortables').sortable({
@@ -24,32 +45,6 @@
 		cfct_builder.bindClickables();
 		cfct_builder.bindLiveClickables();
 		
-		// Handle the display behavior after this has been placed in the DOM in its correct location.
-		$('#cfct-build-tabs li a',cfct_build).each(function() {
-			var _this = $(this);
-			// add click event to tab
-			_this.click(function() {
-				cfctTabSwitch(_this);
-				return false;
-			});
-
-			// handle visual editor disabled
-			if(_this.attr('href') == '#postdiv' && $('#postdiv').length == 0) {
-				_this.attr('href', '#postdivrich');
-			}
-			
-			var contentDiv = _this.attr('href');
-			var _thisHref = $(contentDiv);
-			wpActiveEditor = contentDiv.replace('#', '');
-
-			// hide tab content if its not the active tab
-			if (_this.parents('li').hasClass('active')) {
-				_thisHref.show();
-				cfctInitialActiveTab = _this.attr('href');
-			}
-		});
-		cfctPrepMediaGallery(cfctInitialActiveTab == '#cfct-build-data' ? 'build' : 'wordpress');
-		
 		// dialog helper for window resize
 		$(window).resize(function() {
 			cfct_builder.resizeDOMWindow();
@@ -60,7 +55,6 @@
 			cfct_builder.toggleOptions();
 			return false;
 		});
-		
 	};
 
 // Tab Switching
@@ -145,7 +139,6 @@
 				break;
 			case 'build':
 				$('#build-editor-toolbar').append(mediaButtons);
-				$('#editor-toolbar,#wp-content-editor-tools').show();
 				break;
 		}
 	};
@@ -207,6 +200,7 @@
 			sender:null,
 			receiver:null
 		},
+		moduleSortables:null,
 		DOMWindow_defaults:{
 			windowSourceID:'#cfct-popup-placeholder',
 			overlay:0,
@@ -483,7 +477,7 @@
 
 // Reordering Modules
 	cfct_builder.initBlockSortables = function() {
-		$('.cfct-block-modules').each(function() {
+		this.opts.moduleSortables = $('.cfct-block-modules').each(function() {
 			var _this = $(this);
 			if (_this.hasClass('ui-sortable')) {
 				_this.sortable('destroy');
@@ -539,7 +533,7 @@
 	});
 
 	cfct_builder.disableSortables = function() {
-		$('.cfct-block-modules.ui-sortable').sortable('disable');
+		cfct_builder.opts.moduleSortables.sortable('disable');
 		$('#cfct-sortables, .cfct-popup .multi-module-form').append(
 			$('<div class="cfct-reorder-status">')
 				.append($('<div class="cfct-reorder-status-wrapper" />')
@@ -553,29 +547,25 @@
 	};
 	
 	cfct_builder.enableSortables = function() {
-		$('.cfct-block-modules').sortable('enable');
+		cfct_builder.opts.moduleSortables.sortable('enable');
 		$('#cfct-sortables .cfct-reorder-status, .cfct-popup .cfct-reorder-status').remove();
 	};
 
 // Add Row Functions
 	cfct_builder.insertRow = function(row_type) {
-		if (!cfct_builder.insertingRow) {
-			cfct_builder.insertingRow = true;
-			// this.$rowTrigger.data('popover').hide();
-			if (!cfct_builder.opts.welcome_removed) {
-				cfct_builder.hideWelcome();
-			}
-		
-			return $('#cfct-loading-row').slideDown('fast',function() {
-				if ($('#post_ID').val() < 0) {
-					cfct_builder.initPost('insertRow',row_type);
-					return false;
-				}
-				cfct_builder.fetch('new_row',{type:row_type},'do-insert-row');
-				cfct_builder.insertingRow = false;
-				return true;
-			});
+		// this.$rowTrigger.data('popover').hide();
+		if (!cfct_builder.opts.welcome_removed) {
+			cfct_builder.hideWelcome();
 		}
+		
+		return $('#cfct-loading-row').slideDown('fast',function() {
+			if ($('#post_ID').val() < 0) {
+				cfct_builder.initPost('insertRow',row_type);
+				return false;
+			}
+			cfct_builder.fetch('new_row',{type:row_type},'do-insert-row');
+			return true;
+		});
 	};
 	
 	$(cfct_builder).bind('do-insert-row',function(evt,row) {
@@ -614,20 +604,17 @@
 		$(cfct_builder).trigger('confirm-remove-row');
 	};
 	
-	cfct_builder.doRemoveRow = function(row) {
-		if (!cfct_builder.removingRow) {
-			cfct_builder.removingRow = true;
-			var _row = $(row);
-			cfct_builder.editing({
-				'row_id':_row.attr('id')
-			});
-			cfct_builder.showPopupActivityDiv(cfct_builder.opts.dialogs.delete_row);
+	cfct_builder.doRemoveRow = function(row) {		
+		var _row = $(row);
+		cfct_builder.editing({
+			'row_id':_row.attr('id')
+		});
+		cfct_builder.showPopupActivityDiv(cfct_builder.opts.dialogs.delete_row);
 		
-			var data = {
-				row_id:_row.attr('id')
-			};
-			cfct_builder.fetch('delete_row',data,'do-remove-row-response');
-		}
+		var data = {
+			row_id:_row.attr('id')
+		};
+		cfct_builder.fetch('delete_row',data,'do-remove-row-response');
 	};
 	
 	$(cfct_builder).bind('do-remove-row-response',function(evt,ret) {
@@ -644,7 +631,6 @@
 		
 		cfct_messenger.setMessage('Row Deleted','confirm');
 		cfct_builder.editing(0);
-		cfct_builder.removingRow = false;
 		return true;
 	});
 
@@ -1441,8 +1427,7 @@
 				if (_this.closest('.cfct-module-sideload').size() > 0) {
 					cfct_builder.sideloadSetLoading();
 					cfct_builder.editing({
-						'parent_module_id': $('.multi-module-form input[name="module_id"]', cfct_builder.opts.dialogs.popup_wrapper).val(),
-						'parent_module_id_base': $('.multi-module-form input[name="module_id_base"]', cfct_builder.opts.dialogs.popup_wrapper).val()
+						'parent_module_id': $('.multi-module-form input[name="module_id"]', cfct_builder.opts.dialogs.popup_wrapper).val()
 					});
 					cfct_builder.editModule({'sideload': true}, 'sideload-edit-module-response');
 				}
@@ -1735,18 +1720,6 @@
 		cfct_builder.opts.rich_text = ($('#postdivrich').length > 0 ? true : false);
 		cfct_builder.initDialogs();
 		cfctAdminEditInit();
-		cfct_build.show();
-		// check to see if a module should be displayed
-		var url = location.href,
-			urlParts = null,
-			moduleId = '';
-		if (url.indexOf('#') != -1) {
-			urlParts = url.split('#');
-			moduleId = urlParts[1]
-			if (moduleId.indexOf('cfct-module-') === 0) {
-				$('#' + moduleId).find('.cfct-module-edit').click();
-			}
-		}
 	});
 
 })(jQuery);	

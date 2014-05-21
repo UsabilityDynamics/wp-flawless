@@ -4,7 +4,7 @@
  *
  *
  *
- * @version 0.60.0
+ * @version 3.0.0
  * @author Usability Dynamics, Inc. <info@usabilitydynamics.com>
  * @package Flawless
 */
@@ -19,11 +19,11 @@
 
 <?php get_template_part('attention','home'); ?>
     
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area('left_sidebar'); ?>
   
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+  <div class="main column-block">
     
     <?php get_template_part('loop', 'home'); ?>
 

@@ -92,11 +92,11 @@
     clear: both;
   }
 
-  .item-list.members-list li.cfct-block {
+  .item-list.members-list li.column-block {
 
   }
 
-  .item-list.members-list li.cfct-block {
+  .item-list.members-list li.column-block {
     width: 33%;
   }
 
@@ -105,7 +105,7 @@
     margin-right: -7px;
   }
 
-  .item-list.members-list li.cfct-block .column-module {
+  .item-list.members-list li.column-block .column-module {
     margin: 7px;
   }
 

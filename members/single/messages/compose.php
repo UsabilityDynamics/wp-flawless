@@ -4,14 +4,14 @@
 
 	<label for="send-to-input"><?php _e("Send To (Username or Friend's Name)", 'buddypress') ?></label>
 	<ul class="first acfb-holder">
-    <li>
-    	<?php bp_message_get_recipient_tabs() ?>
-    	<input type="text" name="send-to-input" class="send-to-input" id="send-to-input" />
-    </li>
+		<li>
+			<?php bp_message_get_recipient_tabs() ?>
+			<input type="text" name="send-to-input" class="send-to-input" id="send-to-input" />
+		</li>
 	</ul>
 
 	<?php if ( is_super_admin() ) : ?>
-    <input type="checkbox" id="send-notice" name="send-notice" value="1" /> <?php _e( "This is a notice to all users.", "buddypress" ) ?>
+		<input type="checkbox" id="send-notice" name="send-notice" value="1" /> <?php _e( "This is a notice to all users.", "buddypress" ) ?>
 	<?php endif; ?>
 
 	<label for="subject"><?php _e( 'Subject', 'buddypress') ?></label>
@@ -25,7 +25,7 @@
 	<?php do_action( 'bp_after_messages_compose_content' ) ?>
 
 	<div class="submit">
-    <input type="submit" value="<?php _e( "Send Message", 'buddypress' ) ?>" name="send" id="send" />
+		<input type="submit" value="<?php _e( "Send Message", 'buddypress' ) ?>" name="send" id="send" />
 	</div>
 
 	<?php wp_nonce_field( 'messages_send_message' ) ?>

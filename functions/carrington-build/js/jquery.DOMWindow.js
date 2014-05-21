@@ -11,9 +11,9 @@
 				var $anchorClassName = $('.'+settings.anchoredClassName);
 				$anchorClassName.fadeOut('fast',function(){
 					if ($.fn.draggable){
-						$anchorClassName.draggable('destroy').trigger("unload.DOMWindow").remove();
+						$anchorClassName.draggable('destory').trigger("unload").remove();	
 					}else{
-						$anchorClassName.trigger("unload.DOMWindow").remove();
+						$anchorClassName.trigger("unload").remove();
 					}
 				});
 				if (settings.functionCallOnClose){settings.functionCallAfterClose();}
@@ -21,21 +21,14 @@
 				var $DOMWindowOverlay = $('#DOMWindowOverlay');
 				var $DOMWindow = $('#DOMWindow');
 				$DOMWindowOverlay.fadeOut('fast',function(){
-					$DOMWindowOverlay.trigger('unload.DOMWindow').unbind().remove();
+					$DOMWindowOverlay.trigger('unload').unbind().remove();																	  
 				});
 				$DOMWindow.fadeOut('fast',function(){
-					if ($.fn.draggable) {
-						// try/catch in case draggable is not fully initialized
-						// or destroy method has already been already called
-						try {
-							$DOMWindow.draggable("destroy");
-						}
-						catch (e) {
-							
-						}
+					if ($.fn.draggable){
+						$DOMWindow.draggable("destroy").trigger("unload").remove();
+					}else{
+						$DOMWindow.trigger("unload").remove();
 					}
-
-					$DOMWindow.trigger("unload.DOMWindow").remove();
 				});
 			
 				$(window).unbind('scroll.DOMWindow');
@@ -218,8 +211,8 @@
 				switch(settings.windowSource){
 					case 'inline'://////////////////////////////// inline //////////////////////////////////////////
 						$('.' + settings.anchoredClassName+" #DOMWindowContent").append($(settings.windowSourceID).children());
-						$('.' + settings.anchoredClassName).bind('unload.DOMWindow', function(){// move elements back when you're finished
-							$('.' + settings.windowSourceID).append( $('.' + settings.anchoredClassName+" #DOMWindowContent").children());
+						$('.' + settings.anchoredClassName).unload(function(){// move elements back when you're finished
+							$('.' + settings.windowSourceID).append( $('.' + settings.anchoredClassName+" #DOMWindowContent").children());				
 						});
 						showDOMWindow(settings.anchoredClassName);
 					break;
@@ -319,8 +312,8 @@
 				switch(settings.windowSource){
 					case 'inline'://////////////////////////////// inline //////////////////////////////////////////
 						$DOMWindow.append($(settings.windowSourceID).children());
-						$DOMWindow.bind('unload.DOMWindow', function(){// move elements back when you're finished
-							$(settings.windowSourceID).append($DOMWindow.children());
+						$DOMWindow.unload(function(){// move elements back when you're finished
+							$(settings.windowSourceID).append($DOMWindow.children());				
 						});
 						showDOMWindow();
 					break;

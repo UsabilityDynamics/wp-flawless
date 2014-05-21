@@ -1,29 +1,22 @@
 <?php
 /**
- * Name: Business Card
- * Version: 1.0
- * Description: Widgets for the Flawless theme.
- * Author: Usability Dynamics, Inc.
- * Theme Feature: header-business-card 
- *
- */
+  * Name: Business Card
+  * Description: Widgets for the Flawless theme.
+  * Author: Usability Dynamics, Inc.
+  * Version: 1.0
+  *
+  */
 
 
-add_action('flawless_theme_setup', array('flawless_business_card', 'flawless_theme_setup'));
-add_filter('flawless::available_theme_features', array('flawless_business_card','available_theme_features'));
+add_action('flawless_theme_setup', array('flawless_business_card', 'init'));
+
+
 
 class flawless_business_card {
 
-  function flawless_theme_setup() {
-    add_action('flawless::init_lower', array('flawless_business_card', 'init_lower'));
-  }
+  function init() {
 
-
-  function init_lower() {
-
-    if( !current_theme_supports( 'header-business-card' ) ) {
-      return;
-    }
+    flawless_theme::console_log('P: Executed: flawless_business_card::init();');
 
     //** Add administrative actions */
     add_action('admin_init', array('flawless_business_card', 'admin_init'));
@@ -39,21 +32,11 @@ class flawless_business_card {
 
   }
 
-
   function admin_init() {
 
     //** Add Business Card to header configuration */
     add_filter('flawless_option_header_elements', array('flawless_business_card','flawless_option_header_elements'));
 
-  }
-
-  /**
-   * {}
-   *
-   */
-  function available_theme_features( $features ) {
-    $features[ 'header-business-card' ] = true;
-    return $features;
   }
 
 
@@ -119,13 +102,13 @@ class flawless_business_card {
    */
   function flawless_option_header_elements($tabs) {
     global $flawless;
-
+    
     $tabs['business'] = array(
-      'label' => __('Business Info','flawless'),
+      'label' => __('Header Business Info','flawless'),
       'id' => 'header-business-card',
-      'name' => 'flawless_settings[disabled_theme_features][header-business-card]',
+      'name' => 'flawless_settings[disabled_features][header-business-card]',
       'position' => 60,
-      'setting' => $flawless['disabled_theme_features']['header-business-card'],
+      'setting' => $flawless['disabled_features']['header-business-card'],
       'toggle_label' => __('Disable the header <b>Caller Card</b> section.', 'flawless'),
       'callback' => array('flawless_business_card','header_business_card_options')
     );
@@ -140,11 +123,11 @@ class flawless_business_card {
    *
    * @since Flawless 1.0
    */
-  function header_business_card_options( $flawless ) {
-
+  function header_business_card_options( $flawless ) {    
+    
     $header_options = (is_array($flawless['business_card']['header']) ? $flawless['business_card']['header'] : array());
     $main_options = (is_array($flawless['business_card']['data']) ? $flawless['business_card']['data'] : array());
-
+ 
     $social_icons = flawless_footer_follow($flawless, array('return_raw' => true));
 
     if(count($social_icons) > 0) {
@@ -201,9 +184,6 @@ class flawless_business_card {
       $flawless = self::flawless_default_settings($flawless);
     }
     ?>
-
-    <div class="tab_description"><?php _e( '', 'flawless' ); ?></div>
-
     <table class="form-table">
       <tbody>
         <tr valign="top">
@@ -225,7 +205,7 @@ class flawless_business_card {
                     <input type="hidden" do_not_clone="true" class="slug_setter" name="flawless_settings[business_card][data][<?php echo $slug; ?>][description]" value="<?php echo $data['description']; ?>" />
                   </th>
                   <td class="draggable_col">
-                    <input type="text" id="flawless_card_<?php echo $slug;?>" class="regular-text" name="flawless_settings[business_card][data][<?php echo $slug; ?>][value]" value="<?php echo $data['value']; ?>" />
+                    <input type="text" id="flawless_card_<?php echo $slug;?>" name="flawless_settings[business_card][data][<?php echo $slug; ?>][value]" value="<?php echo $data['value']; ?>" />
                     <?php echo ($data['description'] ? '<div class="description">' . $data['description'] . '</div>' : ''); ?>
                   </td>
                 </tr>

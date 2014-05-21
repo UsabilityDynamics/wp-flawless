@@ -19,11 +19,11 @@
 
   if( $have_sidebars ) {
     $classes[ 'main_column' ][] = '';
-    $classes[ 'meta_column' ][] = 'cfct-module';
+    $classes[ 'meta_column' ][] = 'column-module';
 
   } else {
-    $classes[ 'main_column' ][] = 'block-75 cfct-block';
-    $classes[ 'meta_column' ][] = 'block-25 cfct-block';
+    $classes[ 'main_column' ][] = 'block-75 column-block';
+    $classes[ 'meta_column' ][] = 'block-25 column-block';
   }
 
 
@@ -31,7 +31,18 @@
 
 <?php do_action( 'bp_before_group_forum_topic' ); ?>
 
-<?php if ( bp_has_forum_topic_posts() ) : ?>
+<?php
+/**
+ * Hack: array('per_page'=>10000)) fixes the problem with amount of shown posts for the current topic. It showed only
+ * first 15 posts on topic page before. peshkov@UD
+ *
+ * @TODO: We should use pagination (see topic_pages() function) for topic posts instead of setting per_page.
+ * But, now, there are lot of bugs and issues related to topic_pages() functionality which MUST be solved in future.
+ * I'm not sure what causes that bugs(issues), probably it can be related to some bbpress custom modifies (of course,
+ * if modifies exist). peshkov@UD
+ *
+ */
+if ( bp_has_forum_topic_posts(array('per_page'=>10000)) ) : ?>
 
     <h1><?php bp_the_topic_title() ?></h1>
 
@@ -82,7 +93,7 @@
             <?php if( groups_get_groupmeta( $bp->groups->current_group->id, 'new_topic_entry_intro' ) != '' ) { ?>
               <div class="bb-new-topic-entry-intro"><?php echo nl2br( stripslashes( groups_get_groupmeta( $bp->groups->current_group->id, 'new_topic_entry_intro' ) ) ); ?></div>
             <?php } ?>
-                  
+
               <div class="control-group">
                 <div class="controls">
                   <textarea required name="reply_text" id="reply_text" class="input-xxlarge" placeholder="<?php _e( 'Add a reply...', 'flawless' ) ?>"></textarea>
@@ -122,7 +133,7 @@
 <?php else: ?>
 
 	<div id="message" class="info">
-    <p><?php _e( 'There are no posts for this topic.', 'buddypress' ) ?></p>
+		<p><?php _e( 'There are no posts for this topic.', 'buddypress' ) ?></p>
 	</div>
 
 <?php endif;?>

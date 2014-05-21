@@ -10,13 +10,13 @@
 
 <?php get_header( 'buddypress' ); ?>
 
-	<div class="<?php flawless_wrapper_class(); ?>">
+	<div id="content" class="<?php flawless_wrapper_class(); ?>">
   
     <?php flawless_widget_area('left_sidebar'); ?>
   
-    <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+		<div class="main column-block">
     
-      <div class="<?php flawless_module_class( '' ); ?>">
+      <div class="column-module">
 
         <?php do_action( 'bp_before_member_settings_template' ); ?>
 
@@ -28,7 +28,7 @@
 
         <?php Flawless_BuddyPress::render_navigation(); ?>
 
-        <div class="item-body clearfix">
+        <div class="item-body cf">
 
           <?php do_action( 'bp_before_member_body' ); ?>
 
@@ -66,7 +66,7 @@
 
         <?php do_action( 'bp_after_member_settings_template' ); ?>
         
-      </div><!-- .cfct-module  -->
+      </div><!-- .column-module  -->
     </div><!-- .main  -->
 
 	 <?php flawless_widget_area('right_sidebar'); ?>

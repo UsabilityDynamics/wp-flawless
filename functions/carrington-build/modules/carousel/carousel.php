@@ -16,8 +16,7 @@ if (!class_exists('cfct_module_carousel') && class_exists('cfct_build_module')) 
 			parent::__construct('cfct-module-carousel', __('Carousel', 'carrington-build'), $opts);
 			add_filter('wp_ajax_cfct_carousel_post_search', array($this, '_handle_carousel_request'));
 			
-		wp_register_script('jquery-cycle', 'http://cdnjs.cloudflare.com/ajax/libs/jquery.cycle/3.03/jquery.cycle.all.min.js', array('jquery'), '1.0');
-
+			wp_register_script('jquery-cycle', $this->get_url().'js/jquery.cycle.js', array('jquery'), '1.0');
 			
 			if (!is_admin()) {
 				wp_enqueue_script('jquery-cycle');
@@ -86,7 +85,7 @@ if (!class_exists('cfct_module_carousel') && class_exists('cfct_build_module')) 
 				'link_images' => !empty($data[$this->get_field_name('link_images')]) ? true : false,
 				'height' => intval($data[$this->get_field_name('height')]),
 				'nav_pos' => esc_attr($data[$this->get_field_name('nav_pos')]),
-				'nav_element' => apply_filters('cfct-carousel-nav-element', '<div class="car-pagination"><ol></ol></div>'),
+				'nav_element' => apply_filters('cfct-carousel-nav-element', '<div class="car-pagination"><ol class="pagination-buttons"></ol></div>'),
 				'nav_selector' => apply_filters('cfct-carousel-nav-selector', '#carousel-'.$data['module_id'].' .car-pagination ol', '#carousel-'.$data['module_id'])
 			);
 			
@@ -366,6 +365,11 @@ if (!class_exists('cfct_module_carousel') && class_exists('cfct_build_module')) 
 				.carousel-edit-form label {
 					display: none;
 				}
+        
+				.carousel-edit-form label.button_label {
+          display: block;
+        }
+        
 				.carousel-edit-form input.text,
 				.carousel-edit-form textarea {
 					width: 90%;	
@@ -609,10 +613,14 @@ if (!class_exists('cfct_module_carousel') && class_exists('cfct_build_module')) 
 					var _overlay = _this.parents(".carousel").find(".car-overlay");
 					$(".car-header .car-title", _overlay).html($(".car-entry-title", _this).html());
 					$(".car-description", _overlay).html( $(".car-entry-description", _this).html());
+					$(".imr-learn-more", _overlay).html( $(".car-learn-more", _this).html());
 					$(".car-cta a", _overlay).attr("href", $(".car-entry-cta a", _this).attr("href"));
 				};
 				cfctCarousel.PagerAnchorBuilder = function(i, el) {
 					return "<li><a href=\"#\">" + (i+1) + "</a></li>";
+          
+          /* var image_url = jQuery("img.car-img", el).attr("src");
+          return "<li><a class=\"carousel-thumb-wrapper\" href=\"#\"><img class=\"carousel-thumb\" src=\"" + image_url + "\"  /></a></li>"; */
 				};
 			';
 		}
@@ -644,9 +652,12 @@ if (!class_exists('cfct_module_carousel') && class_exists('cfct_build_module')) 
 						<input type="text" class="text" name="'.$this->get_field_name('posts').'['.$postdata['id'].'][title]" value="'.esc_attr($postdata['title']).'" />
 						<label>Description</label>
 						<textarea name="'.$this->get_field_name('posts').'['.$postdata['id'].'][content]">'.esc_textarea($postdata['content']).'</textarea>
+						<label class="button_label">Link Label:</label>
+						<input type="text" class="text" name="'.$this->get_field_name('posts').'['.$postdata['id'].'][button_label]" value="'.esc_attr($postdata['button_label']).'" />
 						<input type="button" name="done" class="button carousel-edit-done" value="Done" />
 						<span class="carousel-edit-remove trash"><a href="#remove" class="lnk-remove">remove</a></span>
 					</div>
+          <br style="clear: both;" />
 				</li>
 				';			
 			return $html;

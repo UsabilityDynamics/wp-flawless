@@ -1,0 +1,112 @@
+/**
+ * Flawless Global Styles for WP-Admin
+ *
+ * Styles loaded automatically on all admin pages.
+ *
+ * Copyright 2012 Usability Dynamics, Inc
+ *
+ */
+ 
+ul.flawless[flawless="action_list"] li {
+  margin-bottom: 10px;
+}
+
+ul.flawless[flawless="action_list"] li span.description {
+  font-style: normal;
+  padding-left: 0.5em;
+  opacity: 0;
+}
+
+ul.flawless[flawless="action_list"] li:hover span.description {
+  opacity: 1;
+}
+
+.wp-tab-panel.flawless_post_type_options {
+  min-height: 100px;
+  height: auto;
+  padding-bottom: 0;
+  width: 235px;
+}
+
+.wp-tab-panel.flawless_post_type_options span.regular-text-label {
+  display: block;
+  float: left;
+  padding-right: 4px;
+  padding-top: 4px;
+  text-align: right;
+  width: 50px;
+}
+
+.wp-tab-panel.flawless_post_type_options input.regular-text {
+  width: 175px;
+}
+
+.flawless_link {
+  cursor: pointer;
+}
+
+span.flawless_link.flawless_delete_row {
+  border-bottom: 1px solid #FF0000;
+  color: #FF0000;
+}
+
+.flawless_show_advanced {
+  cursor: pointer;
+}
+
+ul.flawless_post_type_options {
+  margin-top: 7px;
+  margin-left: 9px;
+  margin-bottom: 15px;
+}
+
+.flawless_action .response_container {
+  color: #929292;
+  padding: 3px;
+  border-radius: 3px 3px 3px 3px;
+}
+
+.flawless_action .response_container.success {
+  background: none repeat scroll 0 0 #EFFFF6;
+  color: green;
+}
+
+div.flawless_bc_options {
+  height: auto !important;
+  padding: 5px;
+  width: 95%;
+}
+
+ul.flawless_sortable_attributes {
+  margin: 0;
+  padding: 5px 2px;
+}
+
+ul.flawless_sortable_attributes li {
+  background: url("../../img/admin/flawless_draggable.png") no-repeat scroll left center transparent;
+  padding-left: 25px;
+}
+
+
+/* Carrington Build Extensions Begin { */
+.cfct-row-handle .cfct-add-row-class {
+  background:url(../../img/admin/cfct-add-row-class.png) no-repeat 0 0;
+  float: left;
+  height:21px;
+  overflow:hidden;
+  text-indent:-32000px;
+  width:21px;
+}
+
+.cfct-popup-content .cfct-inline-els span.description {
+  color: #8F8F8F;
+  font-style: normal;
+  line-height: 28px;
+  margin-left: 7px;
+}
+
+#cfct-build-data dl.cfct-module-content  {
+  margin: 5px 0 0px 5px;
+}
+
+/* Carrington Build Extensions End } */

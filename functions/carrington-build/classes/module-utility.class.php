@@ -3,7 +3,7 @@
 /* heinous -- we need to include this for wp_terms_checklist.  yet this file
  * (__FILE__) may be included from all sorts of weird paths
  */
-require_once ABSPATH . '/wp-admin/includes/template.php';
+require_once ABSPATH.'/wp-admin/includes/template.php';
 
 /**
  * Utility class that will be extended by cfct_build_module

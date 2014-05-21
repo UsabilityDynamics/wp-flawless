@@ -1,6 +1,6 @@
 <?php
 if (!class_exists('cfct_module_loop')) {
-	@include_once( dirname( dirname( __FILE__ ) ) . '/loop/loop.php' );
+	@include_once(dirname(dirname(__FILE__)).'/loop/loop.php');
 }
 
 if (!class_exists('cfct_module_loop_subpages') && class_exists('cfct_module_loop')) {

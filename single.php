@@ -12,32 +12,32 @@
 
 <?php get_header(); ?>
 
-<?php get_template_part( 'attention', 'post' ); ?>
+<?php get_template_part('attention', 'post'); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area('left_sidebar'); ?>
 
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+  <div class="main column-block">
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-    <div id="post-<?php the_ID(); ?>" class="<?php flawless_module_class(); ?>">
-
-      <?php do_action( 'flawless_ui::above_header' ); ?>
-
+    <div id="post-<?php the_ID(); ?>" <?php post_class(''); ?>>
+    
+      <?php if(!hide_page_title()) { ?>
       <header class="entry-title-wrapper">
         <?php flawless_breadcrumbs(); ?>
-        <?php flawless_page_title(); ?>
+        <h1 class="entry-title"><?php echo apply_filters('flawless_title', get_the_title(), array('title' =>  get_the_title(), 'position' => 'entry-title')); ?></h1>
       </header>
+      <?php } ?>
+      
+      <?php get_template_part('entry-meta', 'header'); ?>
 
-      <?php get_template_part( 'entry-meta', 'header' ); ?>
-
-      <div class="entry-content clearfix">
+      <div class="entry-content cf">
       <?php the_content('More Info'); ?>
       <?php comments_template(); ?>
       </div>
-
-      <?php get_template_part( 'entry-meta', 'footer' ); ?>
-
+      
+      <?php get_template_part('entry-meta', 'footer'); ?>
+      
     </div>
     <?php endwhile; endif; ?>
   </div>

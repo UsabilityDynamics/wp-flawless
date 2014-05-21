@@ -1,11 +1,11 @@
 <?php
-/**
- * Name: BuddyPress Extensions
- * Version: 1.0
- * Description: Extra functionality for the BuddyPress plugin
- * Author: Usability Dynamics, Inc.
- *
- */
+
+/*
+	Name: BuddyPress Extensions
+	Description: Extra functionality for the BuddyPress plugin
+	Author: Usability Dynamics, Inc.
+	Version: 1.0
+*/
 
 
 //** All BuddyPress actions are initialized after bb_include action is ran. */
@@ -23,12 +23,10 @@ class Flawless_BuddyPress {
 
     if( !is_object($bp) ) {
       return;
-    }    
-    
-    add_theme_support( 'bbpress' );
+    }
 
     add_filter('bp_get_the_topic_post_content', array( 'flawless_shortcodes','do_code_shortcode'),0);
-    add_filter('bp_get_the_topic_post_content', array( 'flawless_shortcodes','do_code_shortcode'),100);    
+    add_filter('bp_get_the_topic_post_content', array( 'flawless_shortcodes','do_code_shortcode'),100);
 
     //** TEMPORARY SETTINGS */
     $flawless[ 'buddypress' ][ 'hide_group_search' ] = 'true';
@@ -51,9 +49,9 @@ class Flawless_BuddyPress {
     add_action( 'admin_init', array( 'Flawless_BuddyPress', 'admin_init'), 0);
 
     //** Stop the Admin Bar from being rendered by BuddyPress */
-    remove_action( 'bp_init',    'bp_core_load_buddybar_css' );
-    remove_action( 'wp_footer',    'bp_core_admin_bar', 8 );
-    remove_action( 'admin_footer', 'bp_core_admin_bar'    );
+		remove_action( 'bp_init',    'bp_core_load_buddybar_css' );
+		remove_action( 'wp_footer',    'bp_core_admin_bar', 8 );
+		remove_action( 'admin_footer', 'bp_core_admin_bar'    );
 
 
     /** Determine if BP Template Pack is used */
@@ -426,7 +424,7 @@ class Flawless_BuddyPress {
    *
    * @author potanin@UD
    */
-  function primary_notice_container( $notices ) {
+  function primary_notice_container( $text ) {
 
     ob_start();
     do_action( 'template_notices' );
@@ -434,12 +432,10 @@ class Flawless_BuddyPress {
     ob_end_clean();
 
     if( empty( $content )) {
-      return $notices;
+      return;
     }
 
-    $notices[] = '<div class="alert fade in"><a class="close" data-dismiss="alert" href="#">&times;</a>' . $content . '</div>';
-    
-    return $notices;
+    echo '<div class="alert fade in"><a class="close" data-dismiss="alert" href="#">&times;</a>' . $content . '</div>';
 
   }
 
@@ -751,8 +747,8 @@ class Flawless_BuddyPress {
 
     while ( bp_groups() ) : bp_the_group();
 
-    $html[] = '<li class="list-item  ' . $atts[ 'item_class' ] . ' clearfix">';
-    $html[] = '<div class="clearfix">';
+    $html[] = '<li class="list-item  ' . $atts[ 'item_class' ] . ' cf">';
+    $html[] = '<div class="column-module cf">';
 
     if( $atts[ 'avatars' ] == 'true' ) {
       $html[] = '<div class="item-avatar"><a href="' . bp_get_group_permalink() . '" title="' . bp_get_group_name() . '">' . bp_get_group_avatar() . '</a></div>';
@@ -1031,6 +1027,7 @@ class Flawless_BuddyPress {
     $args = wp_parse_args( $args,  array(
       'json_result' => true,
       'use_cache' => true,
+      'dom_limit' => 100,
       'request_range' => array(
         'start' => 0,
         'end' => 10
@@ -1039,7 +1036,8 @@ class Flawless_BuddyPress {
       'filterable_attributes' => array(),
       'query' =>  array(
         'per_page' => -1
-      )
+      ),
+      'user_id' => false,
     ));
 
     if( !empty( $args[ 'filter_query' ][ 'search_terms' ] ) ) {
@@ -1063,8 +1061,8 @@ class Flawless_BuddyPress {
     $results = false;
     $args[ 'use_cache' ] = false;
 
-    /* Disabled - this will break JSON response - potanin@UD */
-    /* if(isset($args['debug']) && $args['debug']) $wpdb->show_errors(); */
+    /** If we're in debug mode */
+    //if(isset($args['debug']) && $args['debug']) $wpdb->show_errors();
 
     /* If we don't have results. */
     if( empty( $results[ 'all_results' ] ) ) {
@@ -1082,6 +1080,12 @@ class Flawless_BuddyPress {
       if(isset($filter['search_terms']) && !empty($filter['search_terms'])){
         /* Use Boolean mode search */
         $query .= " AND ( MATCH (t.topic_title, p.post_text) AGAINST ('".$wpdb->escape($filter['search_terms'])."' IN BOOLEAN MODE) )";
+      }
+
+      /* User ID */
+      if( $args[ 'user_id' ] && is_numeric( $args[ 'user_id' ] ) ){
+        /* Add in our topic poster */
+        $query .= " AND t.topic_poster = {$args[ 'user_id' ]}";
       }
 
       /* Voices / Posts Count */
@@ -1123,7 +1127,7 @@ class Flawless_BuddyPress {
       }
 
       /* @todo Add sort by when Andy is ready - williams@UD */
-      $query .= " ORDER BY p.post_time DESC";
+      $query .= " ORDER BY t.topic_time DESC ";
 
       /** Create our temporary table */
       $wpdb->query("CREATE TEMPORARY TABLE {$args['transient_key']} {$query}");

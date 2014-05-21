@@ -12,23 +12,23 @@
 <div class="item-list-tabs no-ajax" id="subnav" role="navigation">
 	<ul class="pills">
 
-    <?php if ( !bp_is_current_action( 'invites' ) ) : ?>
+		<?php if ( !bp_is_current_action( 'invites' ) ) : ?>
 
-    	<li id="groups-order-select" class="last filter">
+			<li id="groups-order-select" class="last filter">
 
-        <label for="groups-sort-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
-        <select id="groups-sort-by">
-        	<option value="active"><?php _e( 'Last Active', 'buddypress' ); ?></option>
-        	<option value="popular"><?php _e( 'Most Members', 'buddypress' ); ?></option>
-        	<option value="newest"><?php _e( 'Newly Created', 'buddypress' ); ?></option>
-        	<option value="alphabetical"><?php _e( 'Alphabetical', 'buddypress' ); ?></option>
+				<label for="groups-sort-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
+				<select id="groups-sort-by">
+					<option value="active"><?php _e( 'Last Active', 'buddypress' ); ?></option>
+					<option value="popular"><?php _e( 'Most Members', 'buddypress' ); ?></option>
+					<option value="newest"><?php _e( 'Newly Created', 'buddypress' ); ?></option>
+					<option value="alphabetical"><?php _e( 'Alphabetical', 'buddypress' ); ?></option>
 
-        	<?php do_action( 'bp_member_group_order_options' ) ?>
+					<?php do_action( 'bp_member_group_order_options' ) ?>
 
-        </select>
-    	</li>
+				</select>
+			</li>
 
-    <?php endif; ?>
+		<?php endif; ?>
 
 	</ul>
 </div><!-- .item-list-tabs -->
@@ -43,7 +43,7 @@ else :
 
 	<div class="groups mygroups">
 
-    <?php locate_template( array( 'groups/groups-loop.php' ), true ); ?>
+		<?php locate_template( array( 'groups/groups-loop.php' ), true ); ?>
 
 	</div>
 

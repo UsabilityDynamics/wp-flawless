@@ -1,5 +1,5 @@
 /* =========================================================
- * jquery.ud.frontend_editor.js v1.5.0
+ * jquery.ud.frontend_editor.js v1.4.0
  * http://usabilitydynamics.com
  * =========================================================
  * Copyright 2011 Usability Dynamics, Inc.
@@ -41,7 +41,7 @@
       },
       wrapper: jQuery( '.container:first' ),
       ui: {
-        containers: this
+        containers: this,
       }
     }, s );
 
@@ -65,9 +65,9 @@
       if( window.console && console.debug ) {
 
         if ( type == 'error' ) {
-          console.error( typeof something !== 'object' ? 'frontend_editor:: ' + something : something );
+          console.error( something );
         } else {
-          console.log( typeof something !== 'object' ? 'frontend_editor:: ' + something : something  );
+          console.log( something );
         }
 
       }
@@ -83,7 +83,7 @@
      * @author potanin@UD
      */
     this.enable = function() {
-      log( 'enable()' );
+      log( 'frontend_editor:: enable()' );
 
       /* Setup Containers */
       jQuery.each( s.ui.containers, function() {
@@ -102,7 +102,7 @@
           key: container_type,
           action: 'initialization',
           element: container
-        });
+        } );
 
         jQuery( container ).resizable( {
           delay: s.settings.change_delay,
@@ -115,25 +115,25 @@
               action: 'resize',
               element: this_ui.helper,
               ui: this_ui
-            });
+            } );
 
             /* Unset CSS styles that should not be applied to containers */
             jQuery( container ).css( 'top', '' ).css( 'width', '' ).css( 'left', '' ).css( 'right', '' ).css( 'bottom', '' );
 
           }
-        });
+        } );
 
         jQuery( container ).addClass( 'editable_container' );
 
-      });
+      } );
 
       /* Setup individual modules */
-      jQuery.each( s.ui.modules, function() {
+      jQuery.each( s.ui.modules, function( ) {
 
         var module = this;
-        var abandonment_timer;
         var element_hash = jQuery( module ).attr( 'element_hash' );
         var position = jQuery( module ).position();
+        var abandonment_timer;
         var selection_shield = jQuery( '<div class="selection_shield" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;"></div>' );
 
         s.styles[ 'modules' ][ element_hash ] = '';
@@ -142,15 +142,13 @@
         jQuery( module ).css( 'position', 'absolute' );
         jQuery( module ).css( 'left', position.left + 'px' );
         jQuery( module ).css( 'top', position.top + 'px' );
-        jQuery( module ).css( 'height', jQuery( module ).height()  + 'px' );
-        jQuery( module ).css( 'width', jQuery( module ).width()  + 'px' );
 
         jQuery( document ).trigger( 'frontend_editor::update_styles', {
           type: 'module',
           key: element_hash,
           action: 'initialization',
           element: module
-        });
+        } );
 
         jQuery( module ).addClass( 'movable' );
 
@@ -167,10 +165,10 @@
               action: 'drag',
               element: this_ui.helper,
               ui: this_ui
-            });
+            } );
 
           }
-        });
+        } );
 
         /* Make it resizable */
         jQuery( module ).resizable( {
@@ -186,10 +184,10 @@
               action: 'resize',
               element: this_ui.helper,
               ui: this_ui
-            });
+            } );
 
           }
-        });
+        } );
 
         /* Track user intefaction by way of mouse */
         jQuery( module ).mouseenter( function() {
@@ -209,9 +207,9 @@
             jQuery( selection_shield ).remove();
 
           }, s.settings.timers.abandonment );
-        });
+        } );
 
-      });
+      } );
 
     }
 
@@ -221,15 +219,14 @@
      *
      */
     this.disable = function() {
-      log( 'disable()' );
-      jQuery('.selection_shield').remove();
+
       jQuery.each( s.ui.modules, function() {
         jQuery( this ).removeClass( 'movable' ).removeClass( 'active_now' ).draggable( 'destroy' ).resizable( 'destroy' ).unbind( 'mouseenter mouseleave' );
-      });
+      } );
 
       jQuery.each( s.ui.containers, function() {
         jQuery( this ).resizable( 'destroy' ).removeClass( 'editable_container' );
-      });
+      } );
 
     }
 
@@ -266,19 +263,16 @@
         args.right_distance = args.parent.width() - args.element.width() - args.left_distance;
 
         if( args.right_distance < args.left_distance ) {
-          args.styles.right = parseInt( Math.round( ( args.right_distance / args.container_width ) * 10000 ) / 100 );
-          args.styles.right = ( args.styles.right > 0 && args.styles.right < 100 ? args.styles.right : 0 ) + '%';
+          args.styles.right = Math.round( ( args.right_distance / args.container_width ) * 10000 ) / 100 + '%';
+
         } else {
-          args.styles.left = parseInt( Math.round( ( args.left_distance / args.container_width ) * 10000 ) / 100 );
-          args.styles.left = ( args.styles.left > 0 && args.styles.left < 100 ? args.styles.left : 0 ) + '%';
+          args.styles.left = Math.round( ( args.left_distance / args.container_width ) * 10000 ) / 100 + '%';
+
         }
 
-        args.styles.top =  parseInt( Math.round( ( jQuery( settings.element ).position().top / args.parent.height() ) * 10000 ) / 100 );
+        args.styles.top =  Math.round( ( jQuery( settings.element ).position().top / args.parent.height() ) * 10000 ) / 100  + '%';
         args.styles.width = jQuery( settings.element ).width() + 'px';
         args.styles.position = 'absolute';
-
-        /** Double-check that dimensions are within range */
-        args.styles.top = ( args.styles.top > 0 && args.styles.top < 100 ? args.styles.top : 0 ) + '%';
 
       }
 

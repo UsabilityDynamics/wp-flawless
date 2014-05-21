@@ -13,13 +13,13 @@
 
 <?php do_action( 'bp_before_directory_groups_page' ); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area( 'left_sidebar' ); ?>
 
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+  <div class="main column-block">
   
-    <div class="<?php flawless_module_class( '' ); ?>">
+    <div class="column-module">
 
     <?php do_action( 'bp_before_directory_groups' ); ?>
 
@@ -29,7 +29,7 @@
 
       <?php do_action( 'bp_before_directory_groups_content' ); ?>
 
-      <?php if( !$flawless['buddypress']['hide_group_search'] ) { ?>
+      <?php if( !$fs['buddypress']['hide_group_search'] ) { ?>
       <div id="group-dir-search" class="dir-search" role="search">
         <?php bp_directory_groups_search_form() ?>
       </div><!-- #group-dir-search -->
@@ -86,7 +86,7 @@
 
     <?php do_action( 'bp_after_directory_groups' ); ?>
 
-    </div><!-- .cfct-module  --> 
+    </div><!-- .column-module  --> 
   </div><!-- .main  --> 
 
  <?php flawless_widget_area( 'right_sidebar' ); ?>

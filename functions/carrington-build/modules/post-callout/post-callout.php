@@ -384,7 +384,7 @@ if (!class_exists('post_callout_module')) {
 					
 			$ret .= $this->post_layout_controls_js();
 			$ret .= $this->global_image_selector_js('global_image');
-			$ret .= require( 'js/module-admin-js.inc' );
+			$ret .= require('js/module-admin-js.inc');
 			return $ret;
 		}
 		
@@ -394,7 +394,7 @@ if (!class_exists('post_callout_module')) {
 		 * @return void
 		 */
 		public function admin_css() {
-			$ret = require( 'css/module-css.inc' );
+			$ret = require('css/module-css.inc');
 			return $ret;
 		}
 

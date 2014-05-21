@@ -1,7 +1,7 @@
 <?php  if( !apply_filters( 'skip_header', false ) ) { get_header( 'buddypress' ); } ?>
 
-  <div class="<?php flawless_wrapper_class(); ?>">
-    <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+  <div id="content" class="<?php flawless_wrapper_class(); ?>">
+    <div class="main column-block">
 
     <?php do_action( 'bp_before_register_page' ) ?>
     <?php $wp_bp_nonce = md5(NONCE_KEY . time()); ?>

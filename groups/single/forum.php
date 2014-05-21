@@ -24,10 +24,10 @@ if ( bp_is_group_forum_topic_edit() ) {
 <script type="text/javascript">
   jQuery(document).ready(function() {
 
-    var forum_filter = jQuery('<div class="filter cfct-module single-widget-area"></div>');
+    var forum_filter = jQuery('<div class="filter column-module single-widget-area"></div>');
 
-    if( jQuery( '.sidebar.cfct-block').length ) {
-      jQuery( '.sidebar.cfct-block').prepend( forum_filter );
+    if( jQuery( '.sidebar.column-block').length ) {
+      jQuery( '.sidebar.column-block').prepend( forum_filter );
     }
 
     jQuery('#forums-dir-list').dynamic_filter({
@@ -51,8 +51,8 @@ if ( bp_is_group_forum_topic_edit() ) {
       },
       ux: {
         filter: forum_filter,
-        results_wrapper: jQuery('<div class="results_wrapper cfct-block"></div>'),
-        results: jQuery('<div class="results cfct-module"></div>'),
+        results_wrapper: jQuery('<div class="results_wrapper column-block"></div>'),
+        results: jQuery('<div class="results column-module"></div>'),
         status: jQuery('<div class="alert warning"></a>')
       },
       attributes: {
@@ -111,32 +111,32 @@ if ( bp_is_group_forum_topic_edit() ) {
 
 	<?php if ( !bp_group_is_user_banned() && ( ( is_user_logged_in() && 'public' == bp_get_group_status() ) || bp_group_is_member() ) ) : ?>
 
-    <form action="" method="post" id="forum-topic-form" class="form-horizontal">
+		<form action="" method="post" id="forum-topic-form" class="form-horizontal">
 
-        <?php do_action( 'bp_before_group_forum_post_new' ) ?>
+				<?php do_action( 'bp_before_group_forum_post_new' ) ?>
 
-        <?php if ( bp_groups_auto_join() && !bp_group_is_member() ) : ?>
-        	<p><?php _e( 'You will auto join this group when you start a new topic.', 'buddypress' ) ?></p>
-        <?php endif; ?>
+				<?php if ( bp_groups_auto_join() && !bp_group_is_member() ) : ?>
+					<p><?php _e( 'You will auto join this group when you start a new topic.', 'buddypress' ) ?></p>
+				<?php endif; ?>
 
         <fieldset>
           <legend><?php _e( 'Post a New Topic:', 'buddypress' ) ?></legend>
 
-        <div class="control-group">
+				<div class="control-group">
           <label><?php _e( 'Title:', 'buddypress' ) ?></label>
           <div class="controls">
             <input type="text" name="topic_title" class="topic_title span4" value="" />
           </div>
         </div>
 
-        <div class="control-group">
+				<div class="control-group">
           <label><?php _e( 'Content:', 'buddypress' ) ?></label>
           <div class="controls">
             <textarea name="topic_text" class="topic_text span4"></textarea>
           </div>
         </div>
 
-        <div class="control-group">
+				<div class="control-group">
           <label><?php _e( 'Tags:', 'flawless' ) ?></label>
           <div class="controls">
             <input type="text" name="topic_tags" class="topic_tags span4" value="" />
@@ -144,16 +144,16 @@ if ( bp_is_group_forum_topic_edit() ) {
           </div>
         </div>
 
-        <?php do_action( 'bp_after_group_forum_post_new' ) ?>
+				<?php do_action( 'bp_after_group_forum_post_new' ) ?>
 
-        <div class="form-actions">
-        	<input type="submit" name="submit_topic" class="btn btn-primary submit" value="<?php _e( 'Post Topic', 'buddypress' ) ?>" />
-        </div>
+				<div class="form-actions">
+					<input type="submit" name="submit_topic" class="btn btn-primary submit" value="<?php _e( 'Post Topic', 'buddypress' ) ?>" />
+				</div>
 
-        <?php wp_nonce_field( 'bp_forums_new_topic' ) ?>
+				<?php wp_nonce_field( 'bp_forums_new_topic' ) ?>
         </fieldset>
 
-    </form><!-- #forum-topic-form -->
+		</form><!-- #forum-topic-form -->
 
 	<?php endif; ?>
 

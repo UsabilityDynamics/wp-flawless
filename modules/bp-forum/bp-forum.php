@@ -14,28 +14,28 @@
    */
 	class f_cb_bp_forum_module extends cfct_build_module {
 
-    public function __construct( ) {
-    	$opts = array(
-        'description' => __( 'Display a BuddyPress forum.', 'flawless' ),
-        'icon' => 'bp-forum/bp-forum.png'
-    	 );
+		public function __construct( ) {
+			$opts = array(
+				'description' => __( 'Display a BuddyPress forum.', 'flawless' ),
+				'icon' => 'bp-forum/bp-forum.png'
+			 );
 
-    	parent::__construct( 'cfct-module-loop', __( 'BuddyPress Forum', 'flawless' ), $opts );
+			parent::__construct( 'cfct-module-loop', __( 'BuddyPress Forum', 'flawless' ), $opts );
 
       $this->init( );
 
-    }
+		}
 
-    protected function init( ) {
-    	// do this at init 'cause we can't do intl in member declarations
-    	$this->content_display_options = array(
-        'title' => __( 'Titles Only', 'carrington-build' ),
-        'excerpt' => __( 'Excerpts', 'carrington-build' ),
-        'content' => __( 'Post Content', 'carrington-build' ),
-        'advanced' => __( 'Advanced ( Custom )', 'carrington-build' )
-    	 );
+		protected function init( ) {
+			// do this at init 'cause we can't do intl in member declarations
+			$this->content_display_options = array(
+				'title' => __( 'Titles Only', 'carrington-build' ),
+				'excerpt' => __( 'Excerpts', 'carrington-build' ),
+				'content' => __( 'Post Content', 'carrington-build' ),
+				'advanced' => __( 'Advanced ( Custom )', 'carrington-build' )
+			 );
 
-    }
+		}
 
     public function display( $data ) {
       global $groups_template, $bp;
@@ -65,12 +65,12 @@
                 forum_id: '<?php echo $data[$this->get_field_id( 'forum_id' )][0]; ?>'
               },
               classes: {
-                inputs_list_wrapper: 'inputs_list_wrapper cfct-module'
+                inputs_list_wrapper: 'inputs_list_wrapper column-module'
               },
               ux: {
-                filter: jQuery('<div class="filter cfct-block block-25"></div>'),
-                results_wrapper: jQuery('<div class="results_wrapper cfct-block block-75"></div>'),
-                results: jQuery('<div class="results cfct-module"></div>'),
+                filter: jQuery('<div class="filter column-block block-25"></div>'),
+                results_wrapper: jQuery('<div class="results_wrapper column-block block-75"></div>'),
+                results: jQuery('<div class="results column-module"></div>'),
                 status: jQuery('<div class="alert alert-success"></div>')
               },
               attributes: {
@@ -145,13 +145,13 @@
     }
 
 
-    /**
-     * Output the Admin Form
-     *
-     * @author potanin@UD
-     * @return string HTML
-     */
-    public function admin_form( $data ) {
+		/**
+		 * Output the Admin Form
+		 *
+		 * @author potanin@UD
+		 * @return string HTML
+		 */
+		public function admin_form( $data ) {
       global $wpdb, $bp;
 
       $active_groups = new BP_Groups_Template( 0, 'active', 1, false, false, false, '', true, false, false, false );
@@ -169,7 +169,7 @@
       ) );
 
       $html[] = '<div id="'.$this->id_base.'-admin-form-wrapper" class="'.$this->id_base.'-admin-form-wrapper">';
-    	ob_start( ); ?>
+			ob_start( ); ?>
 
       <style type="text/css">
         .cfct-module-loop-admin-form-wrapper {
@@ -251,16 +251,16 @@
 
       return implode( '', ( array ) $html );
 
-    }
+		}
 
 
     /**
-     * Display custom text for a saved module in the builder
-     *
-     * @author potanin@UD
-     * @return string HTML
-     */
-     public function text( $data ) {
+		 * Display custom text for a saved module in the builder
+		 *
+		 * @author potanin@UD
+		 * @return string HTML
+		 */
+ 		public function text( $data ) {
 
       $group_names = $data[$this->get_field_id( 'group_names' )];
       $groups = $data[$this->get_field_id( 'forum_id' )];
@@ -288,7 +288,7 @@
         return __( 'No forum selected.', 'flawless' );
       }
 
-    }
+		}
 
 
 

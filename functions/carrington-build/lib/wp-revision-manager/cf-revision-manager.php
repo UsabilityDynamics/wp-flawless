@@ -168,7 +168,7 @@ if (!class_exists('cf_revisions')) {
 	}
 
 	if (defined('CF_REVISIONS_DEBUG') && CF_REVISIONS_DEBUG) {
-		include( 'tests.php' );
+		include('tests.php');
 	}
 }
 ?>

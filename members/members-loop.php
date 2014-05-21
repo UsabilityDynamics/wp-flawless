@@ -15,26 +15,26 @@
 
 <?php if ( bp_has_members( bp_ajax_querystring( 'members' ) ) ) : ?>
 
-	<div id="page-top" class="pagination clearfix">
+	<div id="page-top" class="pagination cf">
 
-    <div class="member-count-top page-count">
-    	<?php bp_members_pagination_count(); ?>
-    </div>
+		<div class="member-count-top page-count">
+			<?php bp_members_pagination_count(); ?>
+		</div>
 
-    <div  class="member-page-top pagination-links">
-    	<?php bp_members_pagination_links(); ?>
-    </div>
+		<div  class="member-page-top pagination-links">
+			<?php bp_members_pagination_links(); ?>
+		</div>
 
 	</div>
 
 	<?php do_action( 'bp_before_directory_members_list' ); ?>
 
-	<ul id="members-list" class="item-list all-members members-list clearfix" role="main">
+	<ul id="members-list" class="item-list all-members members-list cf" role="main">
 
 	<?php while ( bp_members() ) : bp_the_member(); ?>
 
-    <li class="list-item cfct-block">
-      <div class="cfct-module">
+    <li class="list-item column-block">
+      <div class="column-module">
       
         <div class="item-avatar">
           <a href="<?php bp_member_permalink(); ?>"><?php bp_member_avatar( array( 'width' => 300, 'height' => 100) ); ?></a>
@@ -71,8 +71,8 @@
           <?php do_action( 'bp_directory_members_actions' ); ?>
         </div>
 
-    	</div><?php /* .cfct-module */ ?>
-    </li><?php /* .list-item */ ?>
+			</div><?php /* .column-module */ ?>
+		</li><?php /* .list-item */ ?>
 
 	<?php endwhile; ?>
 
@@ -82,22 +82,22 @@
 
 	<?php bp_member_hidden_fields(); ?>
 
-	<div class="page-bottom pagination clearfix">
+	<div class="page-bottom pagination cf">
 
-    <div class="member-count-bottom page-count">
-    	<?php bp_members_pagination_count(); ?>
-    </div>
+		<div class="member-count-bottom page-count">
+			<?php bp_members_pagination_count(); ?>
+		</div>
 
-    <div class="member-page-bottom pagination-links">
-    	<?php bp_members_pagination_links(); ?>
-    </div>
+		<div class="member-page-bottom pagination-links">
+			<?php bp_members_pagination_links(); ?>
+		</div>
 
 	</div>
 
 <?php else: ?>
 
 	<div id="message" class="info">
-    <p><?php _e( "Sorry, no members were found.", 'buddypress' ); ?></p>
+		<p><?php _e( "Sorry, no members were found.", 'buddypress' ); ?></p>
 	</div>
 
 <?php endif; ?>

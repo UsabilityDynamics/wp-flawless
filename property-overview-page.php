@@ -13,22 +13,24 @@
 
 <?php get_template_part('attention', 'property-overview'); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area('left_sidebar'); ?>
 
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+  <div class="main column-block">
 
-  <div id="post-0" class="<?php flawless_module_class( 'post error404 not-found' ); ?>">
+  <article id="post-0" class="post error404 not-found">
 
+      <?php if(!hide_page_title()) { ?>
       <header class="entry-title-wrapper">
         <?php flawless_breadcrumbs(); ?>
-        <?php flawless_page_title(); ?>
+        <h1 class="entry-title"><?php echo apply_filters('flawless_title', get_the_title(), 'entry-title');?></h1>
       </header>
+      <?php } ?>
       
-      <?php get_template_part( 'entry-meta', 'header' ); ?>
+      <?php get_template_part('entry-meta', 'header'); ?>
 
-      <div class="entry-content clearfix">
+      <div class="entry-content cf">
         
         <?php if(is_404()): ?>
           <p><?php _e('Sorry, we could not find what you were looking for.  Since you are here, take a look at some of our properties.','wpp') ?></p>
@@ -42,12 +44,12 @@
         
       </div>
       
-      <?php get_template_part( 'entry-meta', 'footer' ); ?>
+      <?php get_template_part('entry-meta', 'footer'); ?>
       
     </div> <!-- post_class() -->
 
     
-  </div> <!-- .main cfct-block -->
+  </div> <!-- .main column-block -->
 
   <?php flawless_widget_area('right_sidebar'); ?>
 

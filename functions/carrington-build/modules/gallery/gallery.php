@@ -1,6 +1,6 @@
 <?php
 if (!class_exists('cfct_module_image')) {
-	require_once( dirname( dirname( __FILE__ ) ) . '/image/image.php' );
+	require_once(dirname(dirname(__FILE__)).'/image/image.php');
 }
 if (!class_exists('cfct_module_gallery') && class_exists('cfct_module_image')) {
 	class cfct_module_gallery extends cfct_module_image {

@@ -17,42 +17,42 @@
 
 	<?php /* Show pagination if JS is not enabled, since the "Load More" link will do nothing */ ?>
 	<noscript>
-    <div class="pagination">
-    	<div class="pag-count"><?php bp_activity_pagination_count(); ?></div>
-    	<div class="pagination-links"><?php bp_activity_pagination_links(); ?></div>
-    </div>
+		<div class="pagination">
+			<div class="pag-count"><?php bp_activity_pagination_count(); ?></div>
+			<div class="pagination-links"><?php bp_activity_pagination_links(); ?></div>
+		</div>
 	</noscript>
 
 	<?php if ( empty( $_POST['page'] ) ) : ?>
 
-    <ul class="activity-stream activity-list item-list">
+		<ul class="activity-stream activity-list item-list">
 
 	<?php endif; ?>
 
 	<?php while ( bp_activities() ) : bp_the_activity(); ?>
 
-    <?php locate_template( array( 'activity/entry.php' ), true, false ); ?>
+		<?php locate_template( array( 'activity/entry.php' ), true, false ); ?>
 
 	<?php endwhile; ?>
 
 	<?php if ( bp_activity_has_more_items() ) : ?>
 
-    <li class="load-more">
-    	<a class="btn large" href="#more"><?php _e( 'Load More', 'buddypress' ); ?></a>
-    </li>
+		<li class="load-more">
+			<a class="btn large" href="#more"><?php _e( 'Load More', 'buddypress' ); ?></a>
+		</li>
 
 	<?php endif; ?>
 
 	<?php if ( empty( $_POST['page'] ) ) : ?>
 
-    </ul>
+		</ul>
 
 	<?php endif; ?>
 
 <?php else : ?>
 
 	<div id="message" class="info">
-    <p><?php _e( 'Sorry, there was no activity found. Please try a different filter.', 'buddypress' ); ?></p>
+		<p><?php _e( 'Sorry, there was no activity found. Please try a different filter.', 'buddypress' ); ?></p>
 	</div>
 
 <?php endif; ?>

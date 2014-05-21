@@ -3,55 +3,53 @@
  * Template for standard pages.
  *
  *
- * @version 0.60.0
+ *
+ * @version 3.0.0
  * @author Usability Dynamics, Inc. <info@usabilitydynamics.com>
  * @package Flawless
 */
-
+  
   //** Bail out if page is being loaded directly and flawless_theme does not exist */
-  if( !function_exists( 'get_header' ) ) {
+  if(!function_exists('get_header')) {
     die();
   }
 
 ?>
 
-<?php get_header( 'page' ); ?>
+<?php get_header('page'); ?>
 
-<?php get_template_part( 'attention', 'page' ); ?>
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
-<div class="<?php flawless_wrapper_class(); ?>">
+  <?php flawless_widget_area('left_sidebar'); ?>
+  
+  <div class="main column-block">
+    <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+    <div id="post-<?php the_ID(); ?>" <?php post_class(''); ?>>
 
-  <?php flawless_widget_area( 'left_sidebar' ); ?>
-
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
-    <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-    <div id="post-<?php the_ID(); ?>" class="<?php flawless_module_class(); ?>">
-    
-      <?php do_action( 'flawless_ui::above_header' ); ?>
-
+      <?php if(!hide_page_title()) { ?>
       <header class="entry-title-wrapper">
         <?php flawless_breadcrumbs(); ?>
-        <?php flawless_page_title(); ?>
+        <h1 class="entry-title"><?php echo apply_filters('flawless_title', get_the_title(), array('title' =>  get_the_title(), 'position' => 'entry-title')); ?></h1>
       </header>
+      <?php } ?>
+      
+      <?php get_template_part('entry-meta', 'header'); ?>
 
-      <?php get_template_part( 'entry-meta', 'header' ); ?>
-
-      <div class="entry-content clearfix">
-      <?php the_content( 'More Info' ); ?>
-      </div>
-
+      <div class="entry-content cf">
+      <?php the_content('More Info'); ?>
       <?php comments_template(); ?>
-
-      <?php get_template_part( 'entry-meta', 'footer' ); ?>
-
-    </div><!-- flawless_module_class() -->
-
+      </div>
+      
+      <?php get_template_part('entry-meta', 'footer'); ?>
+      
+    </div> <!-- post_class() -->
+    
     <?php endwhile; endif; ?>
+    
+  </div> <!-- .main column-block -->
 
-  </div>
+  <?php flawless_widget_area('right_sidebar'); ?>
 
-  <?php flawless_widget_area( 'right_sidebar' ); ?>
-
-</div>
+</div> <!-- #content --> 
 
 <?php get_footer(); ?>

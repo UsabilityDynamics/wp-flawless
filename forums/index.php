@@ -38,12 +38,12 @@
           url: '<?php echo admin_url('admin-ajax.php'); ?>?action=bp_get_topics'
         },
         classes: {
-          inputs_list_wrapper: 'inputs_list_wrapper cfct-module'
+          inputs_list_wrapper: 'inputs_list_wrapper column-module'
         },
         ux: {
           filter: jQuery('.dynamic_filter .filter_container .filters'),
           results_wrapper: jQuery('.dynamic_filter .results_wrapper'),
-          results: jQuery('<div class="results cfct-module"></div>'),
+          results: jQuery('<div class="results column-module"></div>'),
           status: jQuery('<div class="alert alert-success"></div>')
         },
         attributes: {
@@ -130,16 +130,16 @@
 
 <?php // locate_template( array( 'forums/forums-loop.php' ), true ); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area('left_sidebar'); ?>
 
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
-    <div class="<?php flawless_module_class( '' ); ?>">
+  <div class="main column-block">
+    <div class="column-module">
 
-      <div id="forums-dir-list" class="forums dir-list dynamic_filter clearfix">
-        <div class="results_wrapper cfct-block block-70"></div>
-        <div class="filter_container cfct-block block-30 right">
+      <div id="forums-dir-list" class="forums dir-list dynamic_filter cf">
+        <div class="results_wrapper column-block block-70"></div>
+        <div class="filter_container column-block block-30 right">
           <?php if(is_user_logged_in()): ?>
             <button class="add_new_topic btn big blue"><i class="icon-plus-sign icon-white"></i> Add New Topic</button>
             <?php endif; ?>
@@ -153,7 +153,7 @@
       <?php endif; ?>
 
     </div>
-  </div> <!-- .main cfct-block -->
+  </div> <!-- .main column-block -->
 
   <?php flawless_widget_area('right_sidebar'); ?>
 

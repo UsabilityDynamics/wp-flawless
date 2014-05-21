@@ -1,9 +1,9 @@
 /*!
- * CF Popover v1.2
+ * CF Popover
  * A lightweight framework for positioning iPad-style popover elements against triggers.
  *
- * Copyright 2011-2012, Crowd Favorite (http://crowdfavorite.com)
- * Released under the MIT license.
+ * Copyright 2011, Crowd Favorite (http://crowdfavorite.com)
+ * Licensed under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
  */
 ;(function ($) {
@@ -51,49 +51,38 @@
 		flop: {
 			left: function (position, data) {
 				var cPosition = data.collisionPosition,
-					$popover = $(this);
+					$popover = $(this),
+					c = 'flopped-x',
+					out;
 				
-				// Modifies position and data by reference
-				var out = uiPosition.flip.left(position, data);
-
-				if (position.left !== undefined) {
-					$popover.toggleClass('flopped-x', cPosition.left !== position.left);
-				}
+				/* Run the original first -- it modifies position
+				and data by reference. Store return value
+				anyway, since we want to make sure if they do
+				decide to return something in future the API
+				isn't broken */
+				out = uiPosition.flip.left(position, data);
+				
+				(cPosition.left !== position.left) ? $popover.addClass(c) : $popover.removeClass(c);
 				
 				return out;
 			},
 			top: function (position, data) {
 				var cPosition = data.collisionPosition,
-					$popover = $(this);
+					$popover = $(this),
+					c = 'flopped-y',
+					out;
 					
-				// Modifies position and data by reference
-				var out = uiPosition.flip.top(position, data);
-
-				if (position.top !== undefined) {
-					$popover.toggleClass('flopped-y', cPosition.top !== position.top);
-				}
+				/* Run the original first -- it modifies position
+				and data by reference. Store return value
+				anyway, since we want to make sure if they do
+				decide to return something in future the API
+				isn't broken */
+				out = uiPosition.flip.top(position, data);
+				
+				(cPosition.top !== position.top) ? $popover.addClass(c) : $popover.removeClass(c);
 				
 				return out;
 			}
-		},
-
-		positionPopover: function(position, data) {
-			var $popover = $(this);
-
-			if (data) {
-				var opener = $popover.data('opener'),
-					popover = $(opener).data('popover');
-					
-				if (popover && popover.opts && popover.opts.my) {
-					var my = popover.opts.my.split(' ');
-					if (my.length > 0) {
-						$popover.toggleClass('flopped-x', data.horizontal !== my[0]);
-						$popover.toggleClass('flopped-y', data.vertical !== (my.length > 1 ? my[1] : my[0]));
-					}
-				}
-			}
-
-			$popover.css(position);
 		},
 		
 		bindEvents: function () {
@@ -158,15 +147,6 @@
 			};
 			this.$trigger.trigger('popover-hide');
 		},
-
-		toggle: function(immediate) {
-			if (this.popoverIsOpen()) {
-				this.hide(immediate);
-			}
-			else {
-				this.show();
-			}
-		},
 		
 		/* Event handler for showing popover */
 		showPopover: function (e) {
@@ -184,13 +164,9 @@
 		
 		/* Calculate and position against trigger */
 		pinToTarget: function () {
-			if (!this.popoverIsOpen()) {
-				return;
-			}
 			var $popover = this.$popover,
 				posOpts = $.extend({
-					of: this.$trigger,
-					using: this.positionPopover
+					of: this.$trigger
 				}, this.opts),
 				
 				/* Monkey-patch in our custom collision handling */

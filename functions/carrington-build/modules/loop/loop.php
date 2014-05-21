@@ -1,17 +1,20 @@
-<?php 
+<?php
 
 /**
  * Once upon a time there was a version of the Loop Module
  * that was a bit funny. This filter fixes the data structure
  * from that time period to work with the current data structure.
- * 
+ *
  * If your data is affected by this once unfortunate version then
  * copy and paste this function, then uncomment it in your functions.php
- * file. DO NOT enable this filter here as it will possibly get commented 
+ * file. DO NOT enable this filter here as it will possibly get commented
  * or removed in a future update.
  *
- * @param array $data 
- * @param object $module 
+ * Modified by potanin@UD. Could not hook in to add "Show Title", "Show Meta", etc.
+ * Had to edit here. - potanin@UD 11/30/2011
+ *
+ * @param array $data
+ * @param object $module
  * @return array
  */
 /*
@@ -29,7 +32,7 @@ function the_cb_lemay_fix($data, $module) {
 add_filter('cfct-migrate-loop-data', 'the_cb_lemay_fix', 10, 2);
 */
 
-/** 
+/**
  * Carrington Build Loop Module
  * Performs a loop based on several different filter criteria
  * set via admin interface.
@@ -44,15 +47,21 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 	class cfct_module_loop extends cfct_build_module {
 		const POST_TYPES_FILTER = 'cfct-module-loop-post-types';
 		const TAXONOMY_TYPES_FILTER = 'cfct-module-loop-taxonomy-types';
-		
+
 		protected $_deprecated_id = 'cfct-module-loop'; // deprecated property, not needed for new module development
 
 		protected $default_display_args = array(
-			'ignore_sticky_posts' => 1
+			'caller_get_posts' => 1
 		);
 
-		protected $content_display_options = array();		
+		protected $content_display_options = array();
 		protected $default_content_display = 'title';
+		protected $default_show_titles = 'yes';
+		protected $default_show_meta = 'yes';
+		protected $default_show_entry_utility = 'yes';
+		protected $default_show_thumbnail = 'no';
+		protected $default_show_entry_excerpt = 'no';
+		protected $default_show_entry_content = 'no';
 		protected $default_item_count = 10;
 		protected $default_item_offset = 0;
 		protected $default_post_type = 'post';
@@ -73,16 +82,17 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			// do this at init 'cause we can't do intl in member declarations
 			$this->content_display_options = array(
 				'title' => __('Titles Only', 'carrington-build'),
-				'excerpt' => __('Titles &amp; Excerpts', 'carrington-build'),
-				'content' => __('Titles &amp; Post Content', 'carrington-build')
+				'excerpt' => __('Excerpts', 'carrington-build'),
+				'content' => __('Post Content', 'carrington-build'),
+				'advanced' => __('Advanced (Custom)', 'carrington-build')
 			);
-			
+
 			// We need to enqueue the suggest script so we can use it later for type-ahead search
 			$this->enqueue_scripts();
 
 			// Taxonomy Filter Request Handler
 			$this->register_ajax_handler($this->id_base.'-get-new-taxonomy-block', array($this, 'get_new_taxonomy_block'));
-			add_action('wp_ajax_cf_taxonomy_filter_autocomplete', array($this, 'taxonomy_filter_autocomplete'));			
+			add_action('wp_ajax_cf_taxonomy_filter_autocomplete', array($this, 'taxonomy_filter_autocomplete'));
 		}
 
 # Data upgrade
@@ -91,29 +101,26 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 * Function to translate legacy loop save data in to "modern" loop save data.
 		 * This is not going to be standard practice. It was unavoidable in the 1.1 upgrade.
 		 *
-		 * @param array $data 
+		 * @param array $data
 		 * @return array
 		 */
 		protected function migrate_data($data) {
-			if (!isset($data[$this->gfn('post_type')])) {
-				$data[$this->gfn('post_type')] = array();
-			}
 			// post types used to be singular and stored as strings
 			if (!is_array($data[$this->gfn('post_type')])) {
 				$data[$this->gfn('post_type')] = (array) $data[$this->gfn('post_type')];
 			}
-		
+
 			// tax_filter used to be the name, now its tax_input and stores much more data
 			if (isset($data[$this->gfn('tax_filter')]) && !empty($data[$this->gfn('tax_filter')])) {
 				$data[$this->gfn('tax_input')][$data[$this->gfn('taxonomy')]] = (array) $data[$this->gfn('tax_filter')];
 				unset($data[$this->gfn('tax_filter')], $data[$this->gfn('taxonomy')]);
 			}
-		
+
 			return apply_filters('cfct-migrate-loop-data', $data, $this);
 		}
-	
+
 # Admin Ajax
-		
+
 		/**
 		 * Type ahead search for tag like term completion
 		 *
@@ -144,16 +151,16 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			}
 			exit;
 		}
-		
+
 		/**
 		 * Return a taxonomy filter section for the admin-ui
 		 *
-		 * @param array $args 
+		 * @param array $args
 		 * @return object cfct_message
 		 */
 		public function get_new_taxonomy_block($args) {
 			$success = $html = false;
-			
+
 			$taxonomy = get_taxonomy(esc_attr($args['taxonomy']));
 			if (!empty($taxonomy) || !is_wp_error($taxonomy)) {
 				$success = true;
@@ -173,7 +180,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 */
 		public function display($data) {
 			$data = $this->migrate_data($data);
-			
+
 			$args = $this->set_display_args($data);
 
 			// put it all together now
@@ -194,15 +201,13 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		protected function set_display_args($data) {
 			// Set default
 			$args = $this->default_display_args;
-			
+
 			// Figure out post type or use default
-			if (isset($data[$this->get_field_name('post_type')])) {
-				$post_type = $data[$this->get_field_name('post_type')];
-				if (!empty($post_type)) {
-					$args['post_type'] = $post_type;
-				}
+			$post_type = $data[$this->get_field_name('post_type')];
+			if (!empty($post_type)) {
+				$args['post_type'] = $post_type;
 			}
-			
+
 			$tax_input = $this->get_data('tax_input', $data);
 			if (!empty($tax_input)) {
 				$relation = $this->get_data('relation', $data, $this->default_relation);
@@ -229,6 +234,24 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			// Number of items
 			$args['posts_per_page'] = intval(!empty($data[$this->get_field_name('item_count')]) ? $data[$this->get_field_name('item_count')] : $this->default_item_count);
 
+      //** Do we show titles - potanin@UD */
+      $args['show_titles'] = isset($data[$this->get_field_name('show_titles')]) ? $data[$this->get_field_name('show_titles')] : $this->default_show_titles;
+
+      //** Do we show meta  - potanin@UD */
+      $args['show_meta'] = isset($data[$this->get_field_name('show_meta')]) ? $data[$this->get_field_name('show_meta')] : $this->default_show_meta;
+
+      //** Do we show entry utility  - potanin@UD */
+      $args['show_entry_utility'] = isset($data[$this->get_field_name('show_entry_utility')]) ? $data[$this->get_field_name('show_entry_utility')] : $this->default_show_entry_utility;
+
+      //** Do we show excerpt when in advanced mode - potanin@UD */
+      $args['show_entry_excerpt'] = isset($data[$this->get_field_name('show_entry_excerpt')]) ? $data[$this->get_field_name('show_entry_excerpt')] : $this->default_show_entry_excerpt;
+
+      //** Do we show excerpt when in advanced mode - potanin@UD */
+      $args['show_thumbnail'] = isset($data[$this->get_field_name('show_thumbnail')]) ? $data[$this->get_field_name('show_thumbnail')] : $this->default_show_thumbnail;
+
+      //** Do we show full content when in advanced mode   - potanin@UD */
+      $args['show_entry_content'] = isset($data[$this->get_field_name('show_entry_content')]) ? $data[$this->get_field_name('show_entry_content')] : $this->default_show_entry_content;
+
 			// Item offset
 			$args['offset'] = intval(isset($data[$this->get_field_name('item_offset')]) ? $data[$this->get_field_name('item_offset')] : $this->default_item_offset);
 
@@ -236,7 +259,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			global $post;
 			$args['post__not_in'] = array($post->ID);
 			$args['display'] = $data[$this->get_field_name('display_type')];
-			
+
 			return $args;
 		}
 
@@ -250,8 +273,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		protected function get_custom_loop($data, $args = array()) {
 			if ($args['display'] == 'title') {
 				return $this->get_custom_loop_ul($data, $args);
-			}
-			else {
+			} else {
 				return $this->get_custom_loop_default($data, $args);
 			}
 		}
@@ -265,32 +287,44 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 */
 		protected function get_custom_loop_default($data, $args = array()) {
 			$this->cache_global_post();
-			
+
+      $args['this_count']= 0;
+
 			ob_start();
 			$query = new WP_Query($args);
+
 			do_action($this->id_base.'-query-results', $query);
 
 			if ($query->have_posts()) {
 				while ($query->have_posts()) {
+
+          $args['this_count'] = $args['this_count'] + 1;
+
 					$query->the_post();
 
 					ob_start();
 					if ($args['display'] == 'excerpt') {
-						$this->post_item_excerpt();
-					}
-					elseif ($args['display'] == 'content') {
-						$this->post_item_content();
+						$this->post_item_excerpt($data, $args);
+
+					} elseif ($args['display'] == 'advanced') {
+            $this->post_advanced($data, $args);
+
+					} elseif ($args['display'] == 'content') {
+						$this->post_item_content($data, $args);
+
 					}
 					$item = ob_get_clean();
 					$item = apply_filters('cfct-build-loop-item', $item, $data, $args, $query); // @TODO deprecate in 1.2? doesn't scale well when extending the loop object
+
 					echo apply_filters($this->id_base.'-loop-item', $item, $data, $args, $query);
 				}
 			}
 			$html = ob_get_clean();
 			$this->reset_global_post();
-			
+
 			$html = apply_filters('cfct-build-loop-html', $html, $data, $args, $query); // @TODO deprecate in 1.2? doesn't scale well when extending the loop object
 			$html = apply_filters($this->id_base.'loop-html', $html, $data, $args, $query);
+
 			return $html;
 		}
 
@@ -303,7 +337,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 */
 		protected function get_custom_loop_ul($data, $args = array()) {
 			$this->cache_global_post();
-			
+
 			ob_start();
 			$query = new WP_Query($args);
 			do_action($this->id_base.'-query-results', $query);
@@ -320,7 +354,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 
 					ob_start();
 					$this->post_item_li();
-					
+
 					$item = ob_get_clean();
 					$item = apply_filters('cfct-build-loop-item', $item, $data, $args, $query); // @TODO deprecate in 1.2? doesn't scale well when extending the loop object
 					echo apply_filters($this->id_base.'-loop-item', $item, $data, $args, $query);
@@ -352,79 +386,113 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 *
 		 * @return void - function echoes
 		 */
-		protected function the_excerpt() {
+		protected function the_excerpt($data = false, $args = false) {
+      global $post;
+
+      $tags_list = get_the_tag_list( '', ', ' );
+
 			?>
 			<div data-post-id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-				<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'carrington-build' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+        <div class="column-module post_listing_inner" element_type="carrington">
+          
+          <?php if($args['show_titles'] == 'yes') { ?>
+          <h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'carrington-build' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+          <?php } ?>
 
-				<div class="entry-meta">
-					<?php $this->posted_on(); ?>
-				</div><!-- .entry-meta -->
+          <?php if($args['show_meta'] == 'yes') { ?>
+          <div class="entry-meta">
+            <?php $this->posted_on(); ?>
+          </div><!-- .entry-meta -->
+          <?php } ?>
 
-				<div class="entry-summary">
-					<?php the_excerpt(); ?>
-				</div><!-- .entry-summary -->
+          <div class="entry-summary">
+            <?php the_excerpt(); ?>
+          </div><!-- .entry-summary -->
 
-				<div class="entry-utility">
-					<?php if ( count( get_the_category() ) ) : ?>
-						<span class="cat-links">
-							<?php printf( __( '<span class="%1$s">Posted in</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
-						</span>
-						<span class="meta-sep">|</span>
-					<?php endif; ?>
-					<?php
-						$tags_list = get_the_tag_list( '', ', ' );
-						if ( $tags_list ):
-					?>
-						<span class="tag-links">
-							<?php printf( __( '<span class="%1$s">Tagged</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
-						</span>
-						<span class="meta-sep">|</span>
-					<?php endif; ?>
-					<span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'carrington-build' ), __( '1 Comment', 'carrington-build' ), __( '% Comments', 'carrington-build' ) ); ?></span>
-					<?php edit_post_link( __( 'Edit', 'carrington-build' ), '<span class="meta-sep">|</span> <span class="edit-link">', '</span>' ); ?>
-				</div><!-- .entry-utility -->
+          <?php if($args['show_entry_utility'] == 'yes') { ?>
+          <div class="entry-utility">
+
+            <?php if ( count( get_the_category() ) ) : ?>
+              <span class="cat-links">
+                <?php printf( __( '<span class="%1$s">Posted in</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
+              </span>
+              <span class="meta-sep">|</span>
+            <?php endif; ?>
+
+            <?php if ( !empty($tags_list) ): ?>
+              <span class="tag-links">
+                <?php printf( __( '<span class="%1$s">Tagged</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
+              </span>
+              <span class="meta-sep">|</span>
+            <?php endif; ?>
+
+            <?php if(post_type_supports($post->post_type, 'comments')) { ?>
+              <span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'carrington-build' ), __( '1 Comment', 'carrington-build' ), __( '% Comments', 'carrington-build' ) ); ?></span>
+              <span class="meta-sep">|</span>
+            <?php } ?>
+
+            <?php edit_post_link( __( 'Edit', 'carrington-build' ), '<span class="edit-link">', '</span>' ); ?>
+          </div><!-- .entry-utility -->
+          <?php } ?>
+          
+        </div>
 			</div><!-- #post-<?php the_ID(); ?>## -->
 			<?php
 		}
-		
+
 		/**
 		 * Output a content block
 		 *
 		 * @return void - function echoes
 		 */
-		protected function the_content() {
+		protected function the_content($data = false, $args = false) {
+      global $post;
+
 			?>
 			<div data-post-id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-				<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'carrington-build' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+        <div class="column-module post_listing_inner" element_type="carrington">
 
-				<div class="entry-meta">
-					<?php $this->posted_on(); ?>
-				</div><!-- .entry-meta -->
+          <?php if($args['show_titles'] == 'yes') { ?>
+          <h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'carrington-build' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+          <?php } ?>
 
-				<div class="entry-summary">
-					<?php the_content(); ?>
-				</div><!-- .entry-summary -->
+          <?php if($args['show_meta'] == 'yes') { ?>
+          <div class="entry-meta">
+            <?php $this->posted_on(); ?>
+          </div><!-- .entry-meta -->
+          <?php } ?>
 
-				<div class="entry-utility">
-					<?php if ( count( get_the_category() ) ) : ?>
-						<span class="cat-links">
-							<?php printf( __( '<span class="%1$s">Posted in</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
-						</span>
-						<span class="meta-sep">|</span>
-					<?php endif; ?>
-					<?php
-						$tags_list = get_the_tag_list( '', ', ' );
-						if ( $tags_list ):
-					?>
-						<span class="tag-links">
-							<?php printf( __( '<span class="%1$s">Tagged</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
-						</span>
-						<span class="meta-sep">|</span>
-					<?php endif; ?>
-					<span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'carrington-build' ), __( '1 Comment', 'carrington-build' ), __( '% Comments', 'carrington-build' ) ); ?></span>
-					<?php edit_post_link( __( 'Edit', 'carrington-build' ), '<span class="meta-sep">|</span> <span class="edit-link">', '</span>' ); ?>
-				</div><!-- .entry-utility -->
+          <div class="entry-summary">
+            <?php the_content(); ?>
+          </div><!-- .entry-summary -->
+
+          <?php if($args['show_entry_utility'] == 'yes') { ?>
+          <div class="entry-utility">
+            <?php if ( count( get_the_category() ) ) : ?>
+              <span class="cat-links">
+                <?php printf( __( '<span class="%1$s">Posted in</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
+              </span>
+              <span class="meta-sep">|</span>
+            <?php endif; ?>
+            <?php
+              $tags_list = get_the_tag_list( '', ', ' );
+              if ( $tags_list ):
+            ?>
+              <span class="tag-links">
+                <?php printf( __( '<span class="%1$s">Tagged</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
+              </span>
+              <span class="meta-sep">|</span>
+            <?php endif; ?>
+
+            <?php if(post_type_supports($post->post_type, 'comments')) { ?>
+            <span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'carrington-build' ), __( '1 Comment', 'carrington-build' ), __( '% Comments', 'carrington-build' ) ); ?></span>
+            <?php } ?>
+
+            <?php edit_post_link( __( 'Edit', 'carrington-build' ), '<span class="meta-sep">|</span> <span class="edit-link">', '</span>' ); ?>
+          </div><!-- .entry-utility -->
+          <?php } ?>
+
+        </div>
 			</div><!-- #post-<?php the_ID(); ?>## -->
 			<?php
 		}
@@ -434,12 +502,86 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 *
 		 * @return void
 		 */
-		protected function post_item_excerpt() {
+		protected function post_advanced($data = false, $args = false) {
+
+      global $post;
+
+
+			?>
+			<div data-post-id="post-<?php the_ID(); ?>" <?php post_class('cf cb_custom_entry ' . ( $args['this_count'] % 2 ? 'odd' : 'even') ); ?> object_count="<?php echo $args['this_count'] % 2 ? 'odd' : 'even'; ?>">
+        <div class="column-module post_listing_inner" element_type="carrington">
+
+        <?php if($args['show_titles'] == 'yes') { ?>
+				<h2 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'carrington-build' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+        <?php } ?>
+
+        <?php if($args['show_meta'] == 'yes') { ?>
+				<div class="entry-meta">
+					<?php $this->posted_on(); ?>
+				</div><!-- .entry-meta -->
+        <?php } ?>
+
+        <?php if($args['show_thumbnail'] == 'yes') { ?>
+          <?php flawless_thumbnail(); ?>
+        <?php } ?>
+
+        <?php if($args['show_entry_excerpt'] == 'yes') { ?>
+				<div class="entry-content entry-summary cf">
+          <?php the_excerpt( $post->ID, 'thumbnail', array( 'class' => 'cfct-mod-image' ) ); ?>
+				</div><!-- .entry-summary -->
+        <?php } ?>
+
+        <?php
+        /*
+        @todo Seems to cause a never-ending loop. - potanin@UD
+        if($args['show_entry_content'] == 'yes') { ?>
+				<div class="entry-summary ">
+					<?php the_content(); ?>
+				</div><!-- .entry-summary -->
+        <?php } */ ?>
+
+        <?php if($args['show_entry_utility'] == 'yes') { ?>
+				<div class="entry-utility">
+					<?php if ( count( get_the_category() ) ) : ?>
+						<span class="cat-links">
+							<?php printf( __( '<span class="%1$s">Posted in</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-cat-links', get_the_category_list( ', ' ) ); ?>
+						</span>
+						<span class="meta-sep">|</span>
+					<?php endif; ?>
+					<?php
+						$tags_list = get_the_tag_list( '', ', ' );
+						if ( $tags_list ):
+					?>
+						<span class="tag-links">
+							<?php printf( __( '<span class="%1$s">Tagged</span> %2$s', 'carrington-build' ), 'entry-utility-prep entry-utility-prep-tag-links', $tags_list ); ?>
+						</span>
+						<span class="meta-sep">|</span>
+					<?php endif; ?>
+
+          <?php if(post_type_supports($post->post_type, 'comments')) { ?>
+          <span class="comments-link"><?php comments_popup_link( __( 'Leave a comment', 'carrington-build' ), __( '1 Comment', 'carrington-build' ), __( '% Comments', 'carrington-build' ) ); ?></span>
+          <?php } ?>
+
+					<?php edit_post_link( __( 'Edit', 'carrington-build' ), '<span class="meta-sep">|</span> <span class="edit-link">', '</span>' ); ?>
+				</div><!-- .entry-utility -->
+        <?php } ?>
+
+        </div><!-- .cb_custom_entry_inner -->
+			</div><!-- #post-<?php the_ID(); ?>## -->
+			<?php
+
+		}
+		/**
+		 * Run excerpt functions
+		 *
+		 * @return void
+		 */
+		protected function post_item_excerpt($data = false, $args = false) {
 			if (function_exists('cfct_excerpt')) {
 				cfct_excerpt();
 			}
 			else {
-				$this->the_excerpt();
+				$this->the_excerpt($data, $args);
 			}
 		}
 
@@ -453,7 +595,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				cfct_content();
 			}
 			else {
-				$this->the_content();
+				$this->the_content($data, $args);
 			}
 		}
 
@@ -488,7 +630,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					<!-- title -->
 					<legend>'.__('Title', 'carrington-build').'</legend>
 					<span class="cfct-input-full">
-						<input type="text" name="'.$this->get_field_id('title').'" id="'.$this->get_field_id('title').'" value="'.esc_attr(isset($data[$this->get_field_name('title')]) ? $data[$this->get_field_name('title')] : '').'" />
+						<input type="text" name="'.$this->get_field_id('title').'" id="'.$this->get_field_id('title').'" value="'.esc_attr($data[$this->get_field_name('title')]).'" />
 					</span>
 					<!-- /title -->
 				</fieldset>';
@@ -499,11 +641,13 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 * If only 1 post type is available the method ouputs a hidden
 		 * element instead of a select list
 		 *
+		 * @see this::get_post_type_dropdown() for how $type is used
+		 * @param string $type - 'post' or 'page' - does this even do anything? ~sp
 		 * @param array $data - saved module data
 		 * @return string HTML
 		 */
 		public function admin_form_post_types($data) {
-			$post_types = $this->get_post_types(null);
+			$post_types = $this->get_post_types($type);
 			$selected = (!empty($data[$this->gfn('post_type')]) ? $data[$this->gfn('post_type')] : array());
 
 			$_taxes = apply_filters(self::TAXONOMY_TYPES_FILTER, get_object_taxonomies(array_keys($post_types), 'objects'), $this);
@@ -514,13 +658,13 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				}
 				$tax_defs[$taxonomy->name] = $taxonomy->label;
 			}
-			
+
 			$html = '
 			<fieldset class="cfct-form-section" id="'.$this->gfi('post_type_checks').'">
 				<legend>Post Type</legend>';
 			if (count($post_types) > 1) {
 				$html .= '
-					<div class="cfct-columnized cfct-columnized-4x clearfix">
+					<div class="cfct-columnized cfct-columnized-4x">
 						<ul>';
 					foreach ($post_types as $key => $post_type) {
 						$post_taxonomies = $this->get_post_type_taxonomies($key);
@@ -529,11 +673,11 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 								<input type="checkbox" name="'.$this->gfn('post_type').'[]" id="'.$this->gfi('post-type-'.$key).'" ';
 						if (is_array($selected) && in_array($key, $selected)) {
 							$html .= 'checked="checked" ';
-						}		
+						}
 						$html .= 'class="post-type-select" data-taxonomies="'.implode(',', $post_taxonomies).'" value="'.$key.'" />
 								<label for="'.$this->gfi('post-type-'.$key).'">'.$post_type->labels->name.'</label>
 							</li>';
-					}	
+					}
 					$html .= '
 						</ul>
 					</div>';
@@ -552,14 +696,14 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				$html .= '
 					<input type="hidden" class="post-type-select" name="'.$this->gfn('post_type').'[]" value="'.$post_type->name.'" data-taxonomies="'.implode(',', $post_taxonomies).'" />';
 			}
-			
-			$html .= '					
+
+			$html .= '
 					<input type="hidden" name="'.$this->gfn('tax_defs').'" id="'.$this->gfi('tax_defs').'" disabled="disabled" value=\''.json_encode($tax_defs).'\' />
 				</fieldset>';
-				
+
 			return $html;
 		}
-		
+
 		protected function get_post_type_taxonomies($post_type) {
 			$taxonomies = get_object_taxonomies($post_type);
 			foreach($taxonomies as $i => $t) {
@@ -579,13 +723,13 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 */
 		public function admin_form_taxonomy_filter($data) {
 			$html = '';
-			
+
 			$post_type = ($data[$this->get_field_name('post_type')]) ? $data[$this->get_field_name('post_type')] : $this->default_post_type;
 			$_taxes = apply_filters(self::TAXONOMY_TYPES_FILTER, get_object_taxonomies($post_type, 'objects'), $this);
-			
+
 			$tax_defs = array();
 			foreach ($_taxes as $tax_type => $taxonomy) {
-				if ($tax_type == 'post_format') { 
+				if ($tax_type == 'post_format') {
 					continue;
 				}
 				if (!is_array($post_type)) {
@@ -632,7 +776,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				</fieldset>';
 			return $html;
 		}
-		
+
 		protected function get_filter_advanced_options($data) {
 			$html = '
 				<div id="'.$this->gfi('filter-advanced-options').'">
@@ -644,15 +788,15 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				</div>';
 			return $html;
 		}
-		
+
 		/**
 		 * Taxonomy query relation
-		 * 
+		 *
 		 * By default all queries are done with an AND operator, meaning that all taxonomies
 		 * selected must be part of the result. Change this to 'OR' and then all results must
 		 * match at least 1 of the selected taxonomies instead of all of them
 		 *
-		 * @param array $data 
+		 * @param array $data
 		 * @return void
 		 */
 		protected function get_filter_relation_select($data) {
@@ -660,9 +804,9 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				'AND' => __('And - all taxonomies must be matched', 'carrington-build'),
 				'OR' => __('Or - any taxonomy can be matched', 'carrington-build')
 			));
-			
+
 			$selected = $this->get_data('relation', $data, $this->default_relation);
-			
+
 			$html = '
 				<div class="cfct-inline-els">
 					<label for="'.$this->gfi('relation').'">'.__('Filter Relation', 'carrington-build').'</label>
@@ -684,7 +828,56 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		 * @return string HTML
 		 */
 		public function admin_form_display_options($data) {
+
+
+      $show_titles = isset($data[$this->id_base.'-show_titles']) ? $data[$this->id_base.'-show_titles'] : $this->default_show_titles;
+      $show_meta = isset($data[$this->id_base.'-show_meta']) ? $data[$this->id_base.'-show_meta'] : $this->default_show_meta;
+      $show_entry_utility = isset($data[$this->id_base.'-show_entry_utility']) ? $data[$this->id_base.'-show_entry_utility']  : $this->default_show_entry_utility;
+      $show_entry_excerpt = isset($data[$this->id_base.'-show_entry_excerpt']) ? $data[$this->id_base.'-show_entry_excerpt']  : $this->default_show_entry_excerpt;
+      $show_thumbnail = isset($data[$this->id_base.'-show_thumbnail']) ? $data[$this->id_base.'-show_thumbnail']  : $this->default_show_thumbnail;
+      // $show_entry_content = isset($data[$this->id_base.'-show_entry_content']) ? $data[$this->id_base.'-show_entry_content']  : $this->default_show_entry_content;
+
+
 			return '
+        <script type="text/javascript">
+          jQuery(document).ready(function() {
+            change_loop_display_type();
+
+            jQuery("#cfct-module-loop-display_type").live("change", function() {
+              change_loop_display_type();
+            });
+
+            function change_loop_display_type() {
+              var display_type = jQuery("#cfct-module-loop-display_type").val();
+
+              switch (display_type) {
+
+                case "content":
+                case "excerpt":
+                  jQuery(".cfct-show-meta").show();
+                  jQuery(".cfct-show-titles").show();
+                  jQuery(".cfct-show-entry-utility").show();
+                  jQuery(".cfct-show-entry-advanced").hide();
+                break;
+
+                case "advanced":
+                  jQuery(".cfct-show-meta").show();
+                  jQuery(".cfct-show-titles").show();
+                  jQuery(".cfct-show-entry-utility").show();
+                  jQuery(".cfct-show-entry-advanced").show();
+                break;
+
+                default:
+                  jQuery(".cfct-show-meta").hide();
+                  jQuery(".cfct-show-titles").hide();
+                  jQuery(".cfct-show-entry-utility").hide();
+                  jQuery(".cfct-show-entry-advanced").hide();
+                break;
+              }
+            }
+
+          });
+        </script>
 				<fieldset class="cfct-form-section">
 					<legend>'.__('Display', 'carrington-build').'</legend>
 					<div class="'.$this->id_base.'-display-group-left">
@@ -693,6 +886,43 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 							'.$this->get_display_type($data).'
 						</div>
 						<!-- / display type -->
+
+          <div class="cfct-inline-els cfct-show-titles">
+            <label for="'.$this->get_field_id('show_titles').'">'.__('Show Titles:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_titles').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_titles').'" id="'.$this->get_field_name('show_titles').'" value="yes"'.checked('yes', $this->get_data('show_titles', $data, $this->show_titles), false).' />
+          </div>
+
+          <div class="cfct-inline-els cfct-show-meta">
+            <label for="'.$this->get_field_id('show_meta').'">'.__('Show Post Date:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_meta').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_meta').'" id="'.$this->get_field_name('show_meta').'" value="yes"'.checked('yes', $this->get_data('show_meta', $data, $this->show_meta), false).' />
+          </div>
+
+          <div class="cfct-inline-els cfct-show-meta">
+            <label for="'.$this->get_field_id('show_thumbnail').'">'.__('Show Thumbnail:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_thumbnail').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_thumbnail').'" id="'.$this->get_field_name('show_thumbnail').'" value="yes"'.checked('yes', $this->get_data('show_thumbnail', $data, $this->show_thumbnail), false).' />
+          </div>
+
+          <div class="cfct-inline-els cfct-show-entry-advanced">
+            <label for="'.$this->get_field_id('show_entry_excerpt').'">'.__('Show Excerpt:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_entry_excerpt').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_entry_excerpt').'" id="'.$this->get_field_name('show_entry_excerpt').'" value="yes"'.checked('yes', $show_entry_excerpt, false).' />
+          </div>' .
+
+          /*'<div class="cfct-inline-els cfct-show-entry-advanced">
+            <label for="'.$this->get_field_id('show_entry_content').'">'.__('Show Full Content:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_entry_content').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_entry_content').'" id="'.$this->get_field_name('show_entry_content').'" value="yes"'.checked('yes', $show_entry_content, false).' />
+          </div>'*/
+
+           ' <div class="cfct-inline-els cfct-show-entry-utility">
+            <label for="'.$this->get_field_id('show_entry_utility').'">'.__('Show Entry Utility:', 'carrington-build').'</label>
+            <input type="hidden" name="'.$this->get_field_name('show_entry_utility').'" value="no"  />
+            <input type="checkbox" name="'.$this->get_field_name('show_entry_utility').'" id="'.$this->get_field_name('show_entry_utility').'" value="yes"'.checked('yes', $show_entry_utility, false).' />
+            <span class="description">'.__('Information such the post\'s category, tags and comments.', 'carrington-build').'</span>
+          </div>
 
 						<!-- num posts input -->
 						'.$this->get_item_count_input($data).'
@@ -709,7 +939,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					<!-- /pagination -->
 				</fieldset>';
 		}
-		
+
 		protected function get_item_count_input($data) {
 			return '
 				<div class="cfct-inline-els">
@@ -717,7 +947,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					<input class="cfct-number-field" id="'.$this->get_field_id('item_count').'" name="'.$this->get_field_name('item_count').'" type="text" value="'.esc_attr($this->get_data('item_count', $data, $this->default_item_count)).'" />
 				</div>';
 		}
-		
+
 		protected function get_item_count_offset_input($data) {
 			return '
 				<div class="cfct-inline-els">
@@ -741,43 +971,43 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			}
 
 			if(count($this->content_display_options) > 1) {
+
 				$args = array(
 					'label' => __('Show', 'carrington-build'),
 					'default' => (!empty($data[$this->get_field_name('display_type')]) ? $data[$this->get_field_name('display_type')] : null)
 				);
+
 				return $this->dropdown('display_type', $this->content_display_options, $value, $args);
-			}
-			else {
-				// i.e., subclass only allows one content display type
-				return '
-					<input type="hidden" name="'.$this->get_field_name('display_type').'" id="'.$this->get_field_id('display_type').'" value="'.$value.'"/>';
+
+			} else {
+				return '<input type="hidden" name="'.$this->get_field_name('display_type').'" id="'.$this->get_field_id('display_type').'" value="'.$value.'"/>';
 			}
 		}
-		
+
 		protected function get_taxonomy_filter_items($data) {
 			$html = '';
-			
+
 			if (!empty($data[$this->gfn('tax_input')])) {
 				foreach ($data[$this->gfn('tax_input')] as $taxonomy => $tax_input) {
 					$html .= $this->get_taxonomy_filter_item($taxonomy, $tax_input);
 				}
 			}
-			
+
 			$html .= '
 				<li class="cfct-repeater-item no-items-item">
 					<p>'.__('There are currently no taxonomy filters.', 'carrington-build').'</p>
 				</li>';
 			return $html;
 		}
-		
+
 		protected function get_taxonomy_filter_item($taxonomy, $tax_input) {
 			if (!is_object($taxonomy)) {
 				$taxonomy = get_taxonomy($taxonomy);
 			}
-			
+
 			$html = '
 				<li id="'.$this->id_base.'-tax-section-'.$taxonomy->name.'" class="'.$this->id_base.'-tax-section cfct-repeater-item" data-taxonomy="'.$taxonomy->name.'">';
-			
+
 			// Heirarchichal taxonomy checkbox interface
 			if ($taxonomy->hierarchical) {
 				$html .= '
@@ -797,11 +1027,11 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					}
 				}
 				$html .= '
-						<label class="cfct-title" for="'.$this->gfi('tax-filter-'.$taxonomy->name).'">' . $taxonomy->label . '</label>
+						<label class="cfct-title" for="'.$this->gfi('tax-filter-'.$tax_type).'">' . $taxonomy->label . '</label>
 
 						<div class="cfct-tax-filter-type-ahead-wrapper">
 							<span class="cfct-input-full">
-								<input class="'.$this->id_base.'-tax-filter-type-ahead-search" name="tax_input['.$taxonomy->name.']" id="'.$this->gfi('tax-input-'.$taxonomy->name).'" type="text" value="'.(!empty($tax_input) ? implode(', ', $tax_input) : '').'" />
+								<input class="'.$this->id_base.'-tax-filter-type-ahead-search" name="tax_input['.$taxonomy->name.']" id="'.$this->gfi('tax-input-'.$tax_type).'" type="text" value="'.(!empty($tax_input) ? implode(', ', $tax_input) : '').'" />
 							</span>
 							<div class="cfct-help">'.__('Start typing to search for a term. Separate terms with commas. If a term is misspelled (ie: does not exist) it will be discarded during save.', 'carrington-build').'</div>
 						</div>';
@@ -812,10 +1042,10 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					</div>
 					<a href="#" class="cfct-repeater-item-remove">remove</a>
 				</li>';
-			
+
 			return $html;
 		}
-		
+
 		/**
 		 * Returns a dropdown for available taxonomies
 		 *
@@ -827,18 +1057,16 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			$options = array();
 			if (!empty($items)) {
 				foreach ($items as $k => $v) {
-					if (in_array($k, array('link_category', 'nav_menu'))) {
+					if (in_array($key, array('link_category', 'nav_menu'))) {
 						continue;
 					}
 					$options[$k] = $v->labels->name;
 				}
 			}
-			
-			//print_r($data);
-			$index = ""; // TODO: What is $index supposed to be here?  Setting it blank.
+
 			$field_name = $this->get_field_name('taxonomy-'.$index);
 			$value = (isset($data[$field_name])) ? $data[$field_name] : 0;
-			
+
 			$html = $this->dropdown(
 				'taxonomy-select',
 				$options,
@@ -851,7 +1079,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					'class_name' => 'taxonomy'
 				)
 			);
-		
+
 			return $html;
 		}
 
@@ -881,14 +1109,14 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			}
 			$post_types = get_post_types($type_opts, 'objects');
 			ksort($post_types);
-			
+
 			// be safe, filter out the undesirables
 			foreach (array('attachment', 'revision', 'nav_menu_item') as $item) {
 				if (!empty($post_types[$item])) {
 					unset($post_types[$item]);
 				}
 			}
-			
+
 			return apply_filters(self::POST_TYPES_FILTER, $post_types, $this);
 		}
 
@@ -902,7 +1130,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			$checkbox_value = (!empty($data[$this->get_field_name('show_pagination')])) ? $data[$this->get_field_name('show_pagination')] : '';
 			$url_value = (!empty($data[$this->get_field_name('next_pagination_link')])) ? $data[$this->get_field_name('next_pagination_link')] : '';
 			$text_value = (!empty($data[$this->get_field_name('next_pagination_text')])) ? $data[$this->get_field_name('next_pagination_text')] : '';
-			
+
 			$html = '
 				<div class="cfct-inline-els">
 					<label for="'.$this->get_field_id('show_pagination').'">'.__('Pagination Link', 'carrington-build').'</label>
@@ -918,10 +1146,10 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						<input type="text" name="'.$this->get_field_name('next_pagination_text').'" id="'.$this->get_field_id('next_pagination_text').'" value="'.$text_value.'" />
 					</div>
 				</div>';
-				
+
 			return $html;
 		}
-				
+
 // Required
 
 		/**
@@ -950,7 +1178,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				$new_data['tax_input']['category'] = $new_data['post_category'];
 				unset($new_data['post_category']);
 			}
-			
+
 			// Namespace the saved data & convert non-hierarchical term strings in to arrays
 			if (!empty($new_data['tax_input'])) {
 				foreach ($new_data['tax_input'] as $taxonomy => $tax_input) {
@@ -968,7 +1196,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				}
 				unset($new_data['tax_input']);
 			}
-			
+
 			return $new_data;
 		}
 
@@ -999,7 +1227,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				#'.$this->id_base.'-admin-form-wrapper li.post-type-taxonomy-warning input[type=text] {
 					background: #eee;
 				}
-				
+
 				#'.$this->id_base.'-admin-form-wrapper li.post-type-taxonomy-warning .warning-text {
 					display: block;
 				}
@@ -1016,7 +1244,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 			$this->js_base = str_replace('-', '_', $this->id_base);
 			return preg_replace('/^(\t){4}/m', '', '
 				cfct_builder.addModuleLoadCallback("'.$this->id_base.'", function(form) {
-					
+
 					'.$this->js_base.'_get_selected_post_type_taxonomies = function() {
 						var taxonomies = null;
 						// merge available taxonomies from the chosen post types
@@ -1031,12 +1259,12 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						})
 						return taxonomies;
 					}
-					
-					// do post-type selection change				
+
+					// do post-type selection change
 					$("#'.$this->gfi('post_type_checks').' :input.post-type-select", form).change(function() {
 						'.$this->js_base.'_filter_taxonomy_select();
 					});
-					
+
 					// add another taxonomy block
 					$("#'.$this->id_base.'-add-tax-button").click(function() {
 						var _this = $(this);
@@ -1044,7 +1272,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						if ( tax != "none") {
 							 '.$this->js_base.'_set_loading();
 							cfct_builder.fetch(
-								"'.$this->id_base.'-get-new-taxonomy-block", 
+								"'.$this->id_base.'-get-new-taxonomy-block",
 								{
 									taxonomy: tax,
 									post_types: $("#'.$this->id_base.'-post_type", form).val()
@@ -1056,16 +1284,16 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						}
 						return false;
 					});
-					
+
 					'.$this->js_base.'_filter_taxonomy_select = function() {
 						var taxonomies = '.$this->js_base.'_get_selected_post_type_taxonomies();
 						var tax_names = eval("(" + $("#'.$this->gfi('tax_defs').'").val() + ")");
 						var _tgt = $("#'.$this->id_base.'-taxonomy-select", form);
 						var options = "";
-												
+
 						// create options for the taxonomoy select list
 						if (taxonomies != null && taxonomies.length > 0) {
-							options = "<option value=\"none\">'.__($this->default_tax_select_text, 'carrington-build').'</option>";							
+							options = "<option value=\"none\">'.__($this->default_tax_select_text, 'carrington-build').'</option>";
 							for (i = 0; i < taxonomies.length; i++) {
 								options += "<option value=\"" + taxonomies[i] + "\">" + tax_names[taxonomies[i]] + "</option>";
 							}
@@ -1073,12 +1301,12 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						else {
 							options = "<option value=\"none\">'.__('no matching taxonomies available', 'carrington-build').'</option>";
 						}
-						
+
 						// assign new options to the taxonomy select list
 						_tgt.html(options);
 						'.$this->js_base.'_prep_taxonomy_filter_list();
 					}
-					
+
 					// generic repeater element remove button
 					$(".cfct-module-admin-repeater-block .cfct-repeater-item .cfct-repeater-item-remove").live("click", function() {
 						var _list = $(this).closest("ol");
@@ -1089,17 +1317,17 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						'.$this->js_base.'_filter_taxonomy_select();
 						return false;
 					});
-								
+
 					// taxonomy filter selection callback
 					'.$this->js_base.'_insert_taxonomy_block = function(ret) {
 						if (ret.success) {
 							var _list = $("#'.$this->id_base.'-tax-filter-items ol", form);
-							var _html = $(ret.html);		
+							var _html = $(ret.html);
 							_list.prepend(_html);
-							
+
 							// columnize
 							_html.find("ul.categorychecklist").columnizeLists({ cols: 3 });
-							
+
 							// set no-items status
 							if (_list.find("li.cfct-repeater-item").size() > 1) {
 								_list.removeClass("no-items");
@@ -1111,7 +1339,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 							// @TODO handle error
 						}
 					};
-					
+
 					// reset and prune the taxonomy filter list
 					'.$this->js_base.'_prep_taxonomy_filter_list = function() {
 						// prune the taxonomy filter list of taxonomies that are already being displayed
@@ -1123,12 +1351,12 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 								if (_this.attr("data-taxonomy") == "") {
 									return;
 								}
-								
+
 								if ( $("#'.$this->id_base.'-tax-filter-items li[data-taxonomy=" + _this.val() + "]").size() > 0 ) {
 									_this.remove();
 								}
 							});
-							
+
 						var taxonomies = '.$this->js_base.'_get_selected_post_type_taxonomies();
 						$("#'.$this->id_base.'-tax-filter-items ol li.cfct-repeater-item").not(".no-items-item").each(function() {
 							var _this = $(this);
@@ -1144,15 +1372,15 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 							}
 						});
 					};
-					
+
 					'.$this->js_base.'_set_loading = function() {
 						$("#'.$this->gfi('tax-select-inputs').' span.'.$this->gfi('loading').'").show();
 					};
-					
+
 					'.$this->js_base.'_unset_loading = function() {
 						$("#'.$this->gfi('tax-select-inputs').' span.'.$this->gfi('loading').'").hide();
-					};					
-					
+					};
+
 					'.$this->js_base.'_bind_suggest = function(item) {
 						var _parent = $(item);
 						var e = _parent.find(".'.$this->id_base.'-tax-filter-type-ahead-search").unbind();
@@ -1164,8 +1392,8 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						e.suggest(
 							cfct_builder.opts.ajax_url + "?action=cf_taxonomy_filter_autocomplete&tax=" + encodeURI(_parent.attr("data-taxonomy")),
 							{
-								delay: 500, 
-								minchars: 2, 
+								delay: 500,
+								minchars: 2,
 								multiple: true,
 								onSelect: function() {
 									$(this).attr("value", $(this).val());
@@ -1174,11 +1402,11 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						);
 						$(".ac_results").css({"z-index": "10005"});
 					};
-					
+
 					'.$this->js_base.'_unbind_suggest = function(item) {
 						$(item).find(".'.$this->id_base.'-tax-filter-type-ahead-search").unbind().end().find(".ac_results").remove();
 					}
-					
+
 					// Show/Hide for Pagination
 					$("#'.$this->get_field_id('show_pagination').'", form).change(function() {
 						var _wrapper = $("#pagination-wrapper");
@@ -1189,10 +1417,10 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 							_wrapper.hide();
 						}
 					}).trigger("change");
-					
+
 					// columnize
 					$("ul.categorychecklist", form).columnizeLists({ cols: 4 });
-					
+
 					// togglr
 					$(".toggle", form).click(function() {
 						var _tgt = $($(this).attr("href"));
@@ -1206,21 +1434,21 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 						}
 						return false;
 					});
-					
+
 					// do initial taxonomy select filtering
 					'.$this->js_base.'_filter_taxonomy_select();
-					'.$this->js_base.'_prep_taxonomy_filter_list();	
+					'.$this->js_base.'_prep_taxonomy_filter_list();
 					$(".cfct-columnized-4x ul", form).columnizeLists({ cols: 4 });
-					
+
 				});
-				
+
 				cfct_builder.addModuleSaveCallback("'.$this->id_base.'",function(form) {
 					// disable taxonomy filter dropdown so that it does not submit
 					$("#'.$this->gfi('taxonomy-select').'").attr("disabled", "disabled");
 				});
 			');
 		}
-		
+
 # Helpers
 
 		/**
@@ -1238,20 +1466,26 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		/**
 		 * Prints HTML with meta information for the current post—date/time and author.  Thanks TwentyTen 1.0
 		 */
-		protected function posted_on() {
-			printf( __( '<span class="%1$s">Posted on</span> %2$s <span class="meta-sep">by</span> %3$s', 'carrington-build' ),
-				'meta-prep meta-prep-author',
+		protected function posted_on($data = false, $args = false) {
+
+			printf( __( '<span class="%1$s">Posted on</span> %2$s', 'carrington-build' ),
+				'meta-prep',
 				sprintf( '<a href="%1$s" title="%2$s" rel="bookmark"><span class="entry-date">%3$s</span></a>',
 					get_permalink(),
 					esc_attr( get_the_time() ),
 					get_the_date()
-				),
+				));
+
+      if(post_type_supports($post->post_type, 'author')) {
+        printf( __( '<span class="meta-sep">by</span> %1$s', 'carrington-build' ),
 				sprintf( '<span class="author vcard"><a class="url fn n" href="%1$s" title="%2$s">%3$s</a></span>',
 					get_author_posts_url( get_the_author_meta( 'ID' ) ),
 					sprintf( esc_attr__( 'View all posts by %s', 'carrington-build' ), get_the_author() ),
 					get_the_author()
-				)
-			);
+				));
+
+      }
+
 		}
 
 		/**
@@ -1268,8 +1502,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 				'label' => '', // The text for the label element
 				'default' => null, // Add a default option ('all', 'none', etc.)
 				'excludes' => array(), // values to exclude from options
-				'class_name' => null, // name to use in the class; defaults to $field_name
-				'multi' => false // use a multi-select instead of a single select
+				'class_name' => null // name to use in the class; defaults to $field_name
 			);
 			$args = array_merge($defaults, $args);
 			extract($args);
@@ -1318,7 +1551,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 		public function get_referenced_ids($data) {
 			$referenced_ids = array();
 			$data = $this->migrate_data($data);
-			
+
 			// author is allowed to be "0" in which case we don't need to fuss
 			if (!empty($data[$this->gfn('author')])) {
 				$referenced_ids['author'] = array(
@@ -1327,7 +1560,7 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 					'value' => $data[$this->gfn('author')]
 				);
 			}
-			
+
 			if (!empty($data[$this->gfn('tax_input')])) {
 				$referenced_ids['tax_input'] = array();
 				foreach ($data[$this->gfn('tax_input')] as $taxonomy => $term_ids) {
@@ -1346,15 +1579,15 @@ if (!class_exists('cfct_module_loop') && class_exists('cfct_build_module')) {
 
 			return $referenced_ids;
 		}
-		
+
 		public function merge_referenced_ids($data, $reference_data) {
 			$data = $this->migrate_data($data);
-						
+
 			// author
 			if (!empty($reference_data['author'])) {
 				$data[$this->gfn('author')] = $reference_data['author']['value'];
 			}
-			
+
 			if (!empty($reference_data['tax_input'])) {
 				foreach ($reference_data['tax_input'] as $tax_type => $term_ids) {
 					$data[$this->gfn('tax_input')][$tax_type] = array();

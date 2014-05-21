@@ -2,13 +2,14 @@
  * Theme Name: Flawless
  * Theme URI: http://usabilitydynamics.com/products/flawless
  * Description: A professional and customizable theme.  Customizable content types, drag-and-drop page elements and many advanced features.
- * Version: 0.60.0
+ * Version: 0.3.6
  * Author: Usability Dynamics, Inc.
  * Author URI: http://usabilitydynamics.com/
- * Tags: light, blue, white, one-column, two-columns, three-columns, left-sidebar, right-sidebar, fixed-width, editor-style, buddypress, custom-background, custom-colors, custom-header, custom-menu, theme-options, translation-ready
+ * Tags: customizable, template, framework, carrington, cms, business, carrington-build, green, blue, one-column, two-columns, three-columns, fixed-width, editor-style, threaded-comments, microformats, buddypress
  *
+ * @package flawless
  *
- * Copyright (c) 2012 Usability Dynamics, Inc. All rights reserved.
+ * Copyright (c) 2011 Usability Dynamics, Inc. All rights reserved.
  * http://usabilitydynamics.com
  *
  * **********************************************************************
@@ -17,295 +18,285 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * **********************************************************************
  *
- *
- * Helpers:
- *
- * .visible-phone
- * .visible-tablet
- * .visible-desktop
- * .hidden-phone
- * .hidden-tablet
- * .hidden-desktop
+ *  Loaded By Theme via wp_enqueue_style():
+ *  - css/bootstrap.css
  *
  */
+
+/* ELEMENTS THAT NEED TO BE ORGANIZED INTO LOGICAL LOCATION BEGIN { */
+
+  /* Hide "Comments are closed text." */
+  .nocomments {
+    display: none;
+  }
+
+  
+/* ELEMENTS THAT NEED TO BE ORGANIZED INTO LOGICAL LOCATION END { */
 
 /* Global CSS for Print and Screen */
 @media screen, print {
 
-  /*====[Main Containers]=================================*/
-
-  .container {
-    max-width: 1090px;
-    width: auto;
+  * {
+    margin:0;
+    padding:0;
   }
 
-  .background_header_image {
+  .cb {
+    clear: both;
+  }
+
+  ul,
+  ol { 
+    margin-left: 0;
+    list-style-type:none;
+  }
+  
+  ul.linenums,
+  ol.linenums { 
+    margin-left: 3em;
+    list-style-type:decimal;
+  }
+  
+  .linenums li{
+      margin-bottom: 0;
+  }
+  
+  /* When a Navbar is added, we add header padding */
+  body.have-navbar {
+    padding-top: 40px;
+  }
+
+  .super_wrapper {
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .body_upper_background {
     position: absolute;
-    top: 0px;
-    left:0px;
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 0;
   }
 
-  .content_container,
+  .content_container,  
   .general_header_wrapper {
-
+    z-index: 1;
   }
-
-  .super_wrapper,
+  
   .general_header_wrapper,
   .flawless_dynamic_area {
     position: relative;
   }
 
-  /*====[General Resets & Fixes]=============================*/
-
-  ul.nav.tabs li {
-    position: absolute;
-    left: -10000px;
+  .general_header_wrapper .column-block {
+    width: auto;
   }
 
-  .cfct-build {
-    overflow:hidden;
-    width:100%;
+  .header_search form {
+    margin: 0;
   }
-
-  input, textarea, select, .uneditable-input {
-    margin-bottom: 0px;
-  }
-
-  /*====[Helpers]===================================*/
-
-  .hidden,
-  .navbar .nav > li.hidden,
-  .navbar .nav > li .hidden {
-    display: none;
-  }
-
+  
+  /* Helpers */
+  
+  /* div is necessary for extra specificity */
   div.right {
     float: right;
   }
-
+  
+  /* div is necessary for extra specificity */
   div.left {
     float: left;
   }
-
+  
+  /* div is necessary for extra specificity */
   div.flush-left {
     margin-left: 0;
     padding-left: 0;
-  }
-
+  }  
+  
+  /* div is necessary for extra specificity */
   div.flush-right {
     margin-right: 0;
     padding-right: 0;
   }
+  
+  .flawless_module,
+  .column-block {
+    width: 100%;
+    display: inline;
+    float: left;
+    min-height: 1px;
+    overflow: hidden;
+  }
 
-  .no-margin {
+  /* Wrapper individual widget areas within widget area sections, should be mostly transparent */
+  .single-widget-area {
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar .widget {
+   clear:both;
+  }
+
+  ul.flawless_dropdown_elements  {
+    list-style: none;
+  }
+
+  ul.flawless-menu,
+  ul.flawless-menu li.menu-item  {
+    margin:0 auto;
+    padding:0;
+  }
+
+  .flawless-menu .divider {
+    display: none;
+  }
+
+  ul.flawless_header_dropdown_links {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .flawless_header_expandable_sections {
     margin: 0;
   }
 
-  .extra-bottom-margin {
-    margin-bottom: 2em;
+  .flawless_header_expandable_sections .header_dropdown_div {
+    position: absolute;
+    left: -10000px;
+    overflow:hidden;
+    margin-bottom: 0px;
+  }
+
+  .flawless_header_expandable_sections .header_dropdown_div .widgettitle {
+    display:none;
+  }
+
+  .entry-meta {
+    margin: 0;
+  }
+
+  div.breadcrumbs {
+    margin-bottom: 0;
+  }
+
+  .widget_rss  ul li a.rsswidget {
+    font-size: 1.2em;
+  }
+
+  .widget_rss .rssSummary {
+    margin-top: 5px;
+  }
+
+  .business_card p {
+    margin-bottom: 2px;
+  }
+
+  .business_card .social_icons {
+    margin-top: 10px;
+  }
+
+  .business_card .social_icons a {
+    margin-right: 5px;
+  }
+
+  ul.wp_crm_contact_form,
+  ul.wp_crm_contact_form li {
+    list-style: none !important;
+  }
+
+  .sidebar .widget_bio p {
+    color:#5E5E5E;
+    font-weight:lighter;
+    line-height:1.6em;
+    padding:0 5px;
+  }
+
+  .sidebar .widget_twitter .entry-content {
+    font-weight:lighter;
+    line-height:1.4em;
+  }
+
+  .sidebar .widget_twitter .entry-content a {
+    color:#B16736;
+  }
+
+  .sidebar .widget_twitter .twitter-avatar {
+    float:left;
+    margin:5px;
+  }
+
+  .sidebar .widget_twitter .time-meta a,
+  .sidebar .widget_twitter .time-meta,.sidebar .widget_twitter .from-meta {
+    color:#B8B8B8;
+  }
+
+  .gallery-item {
+    display: block;
+    float: left;
+    padding-right: 15px;
+  }
+
+  body .cfct-build .hentry {
+    padding-left: 0;
+  }
+
+  body .hentry {
+    clear: both;
+  }
+
+  .entry-utility {
+    clear:both;
+  }
+
+  .option_tab {
+    background-image: none;
+    padding-left: 10px;
+  }
+
+  .dropdown_tab_login a {
+    background: none repeat scroll 0 0 transparent;
+  }
+
+  .features_list h2,
+  .wpp_stats_group {
+    font-weight: normal;
+    color: #595959;
+    clear: both;
+    display: block;
+    font-size: 1.4em;
   }
 
   .screen-reader-text {
     display: none;
   }
 
-  /*====[Bootstrap Support]=====================================*/
-  .btn > a {
-    color: inherit;
+  .cf:before,
+  .cf:after {
+      content:"";
+      display:table;
   }
 
-  /*====[jQuery UI Basic]=====================================*/
-
-  .ui-tabs-hide {
-    position: absolute;
-    left: -10000px;
+  .cf:after {
+      clear:both;
   }
 
-  .ui-datepicker {
-    background-color: #F2F2F2;
-    border: 1px solid #C4C4C4;
-    padding: 0.2em 0.2em 0;
-    width: 17em;
+  .cf {
+      zoom:1;
   }
-
-  .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; }
-  .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position:absolute; top: 2px; width: 2em; height: 1.8em; }
-  .ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover { top: 1px; }
-  .ui-datepicker .ui-datepicker-prev { left:2px; }
-  .ui-datepicker .ui-datepicker-next { right:2px; }
-  .ui-datepicker .ui-datepicker-prev-hover { left:1px; }
-  .ui-datepicker .ui-datepicker-next-hover { right:1px; }
-  .ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span {
-    display: block; position: absolute; left: 0%; margin-left: 3px; top: 50%; margin-top: -8px;
-    text-indent: 0;
-  }
-
-  .ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
-  .ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
-  .ui-datepicker select.ui-datepicker-month-year {width: 100%;}
-  .ui-datepicker select.ui-datepicker-month,
-  .ui-datepicker select.ui-datepicker-year { width: 49%;}
-  .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
-  .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0; }
-  .ui-datepicker td { border: 0; padding: 1px; }
-  .ui-datepicker td span, .ui-datepicker td a {
-    background:none repeat scroll 0 0 #DEDEDE;
-    color:#655858;
-    display:block;
-    padding:0.2em;
-    text-align:center;
-    text-decoration:none;
-  }
-
-  .ui-datepicker .ui-datepicker-today a {
-    background:none repeat scroll 0 0 #7D7D7D;
-    color:#E0E0E0;
-  }
-
-  .ui-datepicker .ui-datepicker-current-day a {
-    background: orange;
-    color: white;
-  }
-
-  .ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
-  .ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
-  .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
-
-
-  /*====[Visual Debug]=====================================*/
-
-  span.floating_edit_trigger a.post-edit-link {
-    height: 50px;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 50px;
-    z-index: 1050;
-  }
-
-  .flawless_placeholder {
-    background: #106b8b;
-    color: #FFF;
-    font-size: 30px;
-    text-align: center;
-  }
-
-  .flawless_toggable_debug {
-    background-color: #767676;
-    color: #FFFFFF;
-    height: 20px;
-    opacity: 0.3;
-    overflow: hidden;
-    padding: 5px 10px;
-  }
-
-  .flawless_toggable_debug.flawless_debug_visible {
-    opacity: 1;
-    height: auto;
-  }
-
-  body.flawless_visual_debug .row-fluid > div[class*="span"],
-  body.flawless_visual_debug .row-fluid > .cfct-block  {
-    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.14);
-    box-shadow:inset 0 0 1px #000000;
-  }
-
-  body.flawless_visual_debug .row-fluid > div[class*="span"] > div,
-  body.flawless_visual_debug .row-fluid > .cfct-block > .cfct-module {
-    background: none repeat scroll 0 0 rgba(204, 186, 76, 0.25);
-    box-shadow:inset 0 0 1px #000000;
-  }
-
-}
-
-
-/**
- * iPads and mid-size Tablets and Phones
- *
- * Screens below this size have a collapsed Navbar and full-screen columns.
- *
- */
-@media ( max-width: 979px ) {
-
-  body .not-for-iphone {
-    display: none !important;
-  }
-
-  .ui-tabs-hide {
-    position: static;
-  }
-
-  body div.row-fluid {
-    width: 100%;
-  }
-
-  /* At full width, any border on a .container will result in a horizontal scroll bar */
-  body div.container {
-    border: 0px;
-    padding: 0em;
-  }
-
-  body .row,
-  body .thumbnails {
-    margin-left: 0;
-  }
-
-  body .row-fluid > div[class*="span"],
-  body .row-fluid > div[class*="span"] > .cfct-module,
-  body .row-fluid > div[class*="span"].last > .cfct-module,
-  body .row-fluid > div[class*="span"].first > .cfct-module {
-    display: block;
-    padding: 0.5em;
-    float: none;
-    width: auto;
+  
+  /* CSS Helpders */
+  .no-margin {
     margin: 0;
   }
-
-  .input-large,
-  .input-xlarge,
-  .input-xxlarge,
-  input[class*="span"],
-  select[class*="span"],
-  textarea[class*="span"],
-  .uneditable-input {
-    display: block;
-    width: 100%;
-    min-height: 28px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
+  
+  .extra-bottom-margin {
+    margin-bottom: 2em;
   }
-
-  .input-prepend input,
-  .input-append input,
-  .input-prepend input[class*="span"],
-  .input-append input[class*="span"] {
-    display: inline-block;
-    width: auto;
-  }
-
-}
-
-
-/**
- * Standard "Large"  Devices
- *
- */
-@media ( min-width: 980px ) {
-
-  .mobile-only {
-    display: none;
-  }
-
-  .nav-collapse.collapse {
-    height: auto !important;
-    display: inline;
-  }
-
 
 }
 
@@ -313,17 +304,53 @@
 /* CSS for Screen Only */
 @media screen {
 
-  ul {
-    margin: 0;
-    list-style-type: none;
+  .container {
+    margin:0 auto;
+    position: relative;
   }
 
   .print-only {
     display: none;
   }
 
-}
+  .column-block.block-66,
+  body.sidebar-left .main.column-block,
+  body.sidebar-right .main.column-block {
+    width: 66.66%;
+  }
 
+  body.sidebar-left.sidebar-right .main.column-block {
+    width: 33.33%;
+  }
+
+  .column-block.block-75 {
+    width: 75%;
+  }
+  
+  .column-block.block-70 {
+    width: 70%;
+  }
+  
+  .column-block.block-30 {
+    width: 30%;
+  }
+  
+  .column-block.block-25 {
+    width: 25%;
+  }
+  
+  .column-block.block-33,
+  .sidebar {
+    width: 33.33%;
+  }
+  
+  /* Buddypress */
+  
+  form#avatar-upload-form #upload {
+    margin-bottom: 9px;
+  } 
+
+}
 
 /** CSS for Print Only */
 @media print {
@@ -341,6 +368,11 @@
 
   a, a:visited {
     text-decoration: none;
+  }
+
+  .column-block {
+    display: block;
+    float: left;
   }
 
   footer {
@@ -366,6 +398,10 @@
 
   h2, h3 {
     page-break-after: avoid;
+  }
+
+  .wpp_attachment_attribute_link {
+    display: none;
   }
 
 

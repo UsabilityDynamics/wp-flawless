@@ -13,13 +13,13 @@
 
 <?php do_action( 'bp_before_directory_members_page' ); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
-
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
+  
   <?php flawless_widget_area('left_sidebar'); ?>
-
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
-
-    <div class="<?php flawless_module_class( '' ); ?>">
+  
+  <div class="main column-block">
+  
+    <div class="column-module">
 
     <?php do_action( 'bp_before_directory_members' ); ?>
 
@@ -29,7 +29,7 @@
 
       <?php do_action( 'bp_before_directory_members_content' ); ?>
 
-      <?php if( !$flawless['buddypress']['hide_member_search'] ) { ?>
+      <?php if( !$fs['buddypress']['hide_member_search'] ) { ?>
       <div id="members-dir-search" class="dir-search" role="search">
         <?php bp_directory_members_search_form(); ?>
       </div><!-- #members-dir-search -->
@@ -92,11 +92,11 @@
 
     <?php do_action( 'bp_after_directory_members' ); ?>
 
-    </div><!-- .cfct-module  -->
-  </div><!-- .main  -->
-
+    </div><!-- .column-module  --> 
+  </div><!-- .main  --> 
+    
  <?php flawless_widget_area('right_sidebar'); ?>
-
+  
 </div><!-- #content -->
 
 <?php do_action( 'bp_after_directory_members_page' ); ?>

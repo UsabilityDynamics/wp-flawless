@@ -11,65 +11,65 @@
 
 <?php get_header( 'buddypress' ); ?>
 
-	<div class="<?php flawless_wrapper_class(); ?>">
+	<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
     <?php flawless_widget_area('left_sidebar'); ?>
 
-    <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
+		<div class="main column-block">
 
-      <div class="<?php flawless_module_class( '' ); ?>">
+      <div class="column-module">
 
-    	<?php do_action( 'bp_before_member_home_content' ); ?>
+			<?php do_action( 'bp_before_member_home_content' ); ?>
 
-    	<div id="item-header" class="item-header" role="complementary">
+			<div id="item-header" class="item-header" role="complementary">
 
-        <?php locate_template( array( 'members/single/member-header.php' ), true ); ?>
+				<?php locate_template( array( 'members/single/member-header.php' ), true ); ?>
 
-    	</div><!-- #item-header -->
+			</div><!-- #item-header -->
 
       <?php Flawless_BuddyPress::render_navigation(); ?>
 
-    	<div class="item-body clearfix">
+			<div class="item-body cf">
 
-        <?php do_action( 'bp_before_member_body' );
+				<?php do_action( 'bp_before_member_body' );
 
-        if ( bp_is_user_activity() || !bp_current_component() ) :
-        	locate_template( array( 'members/single/activity.php'  ), true );
+				if ( bp_is_user_activity() || !bp_current_component() ) :
+					locate_template( array( 'members/single/activity.php'  ), true );
 
-         elseif ( bp_is_user_blogs() ) :
-        	locate_template( array( 'members/single/blogs.php'     ), true );
+				 elseif ( bp_is_user_blogs() ) :
+					locate_template( array( 'members/single/blogs.php'     ), true );
 
-        elseif ( bp_is_user_friends() ) :
-        	locate_template( array( 'members/single/friends.php'   ), true );
+				elseif ( bp_is_user_friends() ) :
+					locate_template( array( 'members/single/friends.php'   ), true );
 
-        elseif ( bp_is_user_groups() ) :
-        	locate_template( array( 'members/single/groups.php'    ), true );
+				elseif ( bp_is_user_groups() ) :
+					locate_template( array( 'members/single/groups.php'    ), true );
 
-        elseif ( bp_is_user_messages() ) :
-        	locate_template( array( 'members/single/messages.php'  ), true );
+				elseif ( bp_is_user_messages() ) :
+					locate_template( array( 'members/single/messages.php'  ), true );
 
-        elseif ( bp_is_user_profile() ) :
-        	locate_template( array( 'members/single/profile.php'   ), true );
+				elseif ( bp_is_user_profile() ) :
+					locate_template( array( 'members/single/profile.php'   ), true );
 
-        elseif ( bp_is_user_forums() ) :
-        	locate_template( array( 'members/single/forums.php'    ), true );
+				elseif ( bp_is_user_forums() ) :
+					locate_template( array( 'members/single/forums.php'    ), true );
 
-        elseif ( bp_is_user_settings() ) :
-        	locate_template( array( 'members/single/settings.php'  ), true );
+				elseif ( bp_is_user_settings() ) :
+					locate_template( array( 'members/single/settings.php'  ), true );
 
-        // If nothing sticks, load a generic template
-        else :
-        	locate_template( array( 'members/single/plugins.php'   ), true );
+				// If nothing sticks, load a generic template
+				else :
+					locate_template( array( 'members/single/plugins.php'   ), true );
 
-        endif;
+				endif;
 
-        do_action( 'bp_after_member_body' ); ?>
+				do_action( 'bp_after_member_body' ); ?>
 
-    	</div><!-- #item-body -->
+			</div><!-- #item-body -->
 
     <?php do_action( 'bp_after_member_home_content' ); ?>
 
-      </div><!-- .cfct-module  -->
+      </div><!-- .column-module  -->
     </div><!-- .main  -->
 
 	 <?php flawless_widget_area('right_sidebar'); ?>

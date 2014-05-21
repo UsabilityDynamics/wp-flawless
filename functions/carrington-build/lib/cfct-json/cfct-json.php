@@ -8,7 +8,7 @@
  */
  
 if (!function_exists('json_encode') && !class_exists('Services_JSON')) {
-	require_once( 'JSON.php' );
+	require_once('JSON.php');
 }	
 
 /**

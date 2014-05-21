@@ -3,7 +3,7 @@
 <div id="item-header-avatar" class="item-header-avatar">
 	<a href="<?php bp_forum_permalink(); ?>" title="<?php bp_get_forum_name(); ?>">
 
-    <?php //bp_forum_avatar(); ?>
+		<?php //bp_forum_avatar(); ?>
 
 	</a>
 </div><!-- #item-header-avatar -->
@@ -16,15 +16,15 @@
 
 	<div id="item-meta">
 
-    <?php //bp_forum_description(); ?>
+		<?php //bp_forum_description(); ?>
 
-    <div id="item-buttons">
+		<div id="item-buttons">
 
-    	<?php do_action( 'bp_forum_header_actions' ); ?>
+			<?php do_action( 'bp_forum_header_actions' ); ?>
 
-    </div><!-- #item-buttons -->
+		</div><!-- #item-buttons -->
 
-    <?php do_action( 'bp_forum_header_meta' ); ?>
+		<?php do_action( 'bp_forum_header_meta' ); ?>
 
 	</div>
 </div><!-- #item-header-content -->

@@ -16,7 +16,7 @@
 <?php if ( bp_has_groups( bp_ajax_querystring( 'groups' ) ) ) : ?>
 
 
-  <?php bp_groups_pagination_count(); ?>    
+  <?php bp_groups_pagination_count(); ?>		
   <?php bp_groups_pagination_links(); ?>	
 
 
@@ -26,8 +26,8 @@
 
 	<?php while ( bp_groups() ) : bp_the_group(); ?>
 
-    <li class="list-item cfct-block">
-      <div class="cfct-module">
+		<li class="list-item column-block">
+      <div class="column-module">
         
         <div class="item-avatar">
           <a href="<?php bp_group_permalink(); ?>"><?php bp_group_avatar(  array( 'type' => 'full' )  ); ?></a>
@@ -55,8 +55,8 @@
 
         </div>
 
-    	</div><?php /* .cfct-module */ ?>
-    </li><?php /* .list-item */ ?>
+			</div><?php /* .column-module */ ?>
+		</li><?php /* .list-item */ ?>
 
 	<?php endwhile; ?>
 
@@ -64,22 +64,22 @@
 
 	<?php do_action( 'bp_after_directory_groups_list' ); ?>
 
-	<div class="page-bottom pagination clearfix">
+	<div class="page-bottom pagination cf">
 
-    <div class="group-dir-count-bottom page-count">
-    	<?php bp_groups_pagination_count(); ?>
-    </div>
+		<div class="group-dir-count-bottom page-count">
+			<?php bp_groups_pagination_count(); ?>
+		</div>
 
-    <div class="group-dir-pag-bottom pagination-links">
-    	<?php bp_groups_pagination_links(); ?>
-    </div>
+		<div class="group-dir-pag-bottom pagination-links">
+			<?php bp_groups_pagination_links(); ?>
+		</div>
 
 	</div>
 
 <?php else: ?>
 
 	<div id="message" class="info">
-    <p><?php _e( 'There were no groups found.', 'buddypress' ); ?></p>
+		<p><?php _e( 'There were no groups found.', 'buddypress' ); ?></p>
 	</div>
 
 <?php endif; ?>

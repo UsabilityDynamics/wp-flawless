@@ -4,7 +4,7 @@
 	$carousel_items_style = !empty($car_opts['height']) ? 'height: '.$car_opts['height'].'px; overflow: hidden;' : '';
 ?>
 <div id="<?php echo $carousel_id; ?>" class="<?php echo $carousel_class; ?>">
-	<div class="carousel-inner"><?php
+	<div class="carousel-inner cf"><?php
 	if ($car_opts['nav_pos'] == 'before') {
 		echo '
 		'.$car_opts['nav_element'];
@@ -30,7 +30,7 @@ if (!empty($items)) {
 						<div class="car-entry-description">
 							'.$item['content'].'
 						</div>
-						<div class="car-entry-cta"><a href="'.$item['link'].'">learn more&hellip;</a></div>
+						<div class="car-entry-cta"><a href="'.$item['link'].'" class="car-learn-more">' . ($item['button_label'] ? $item['button_label'] : "Learn More" ) . '</a></div>
 					</div>
 				</li>';
 	}
@@ -56,7 +56,7 @@ foreach ($control_layout_order as $control) {
 		case 'call-to-action':
 			echo '
 				<div class="car-cta">
-					'.(!empty($items[0]['link']) ? '<a href="'.$items[0]['link'].'" class="imr imr-learn-more">Learn More</a>' : '').'
+					'.(!empty($items[0]['link']) ? '<a href="'.$items[0]['link'].'" class="imr imr-learn-more">' . ( $items[0]['button_label'] ? $items[0]['button_label'] : 'Learn More') . '</a>' : '').'
 				</div>';
 			break;
 		case 'pagination':

@@ -3,6 +3,8 @@
  * Template for archives and categories.
  *
  *
+ *
+ * @version 3.0.0
  * @author Usability Dynamics, Inc. <info@usabilitydynamics.com>
  * @package Flawless
 */
@@ -11,37 +13,45 @@
   if(!function_exists('get_header')) {
     die();
   }
-
-  if( !have_posts() && $flawless[ 'no_search_result_page' ] ) {
-    die( wp_redirect(get_permalink($flawless[ 'no_search_result_page' ])) );
+  
+  if(! have_posts() && $fs[ 'no_search_result_page' ] ) {
+    wp_redirect(get_permalink($fs[ 'no_search_result_page' ]));
+    die();
   }
-
 ?>
 
-<?php get_header( 'search' ) ?>
+<?php get_header() ?>
 
-<?php get_template_part( 'attention', 'search' ); ?>
+<?php get_template_part('attention', 'category'); ?> 
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
+  
+  <?php flawless_widget_area('left_sidebar'); ?>
 
-  <?php flawless_widget_area( 'left_sidebar' ); ?>
-
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
-    <div class="<?php flawless_module_class(); ?>">
-
+  <div class="main column-block">
+  
+    <div class="hentry">
+      <?php if(!hide_page_title()) { ?>
       <header class="entry-title-wrapper">
         <?php flawless_breadcrumbs(); ?>
-        <?php flawless_page_title(); ?>
+        <?php if (trim(get_search_query()) == "") : ?>
+          <h1 class="entry-title error"><?php _e( 'You forgot to enter a search term!', 'flawless' ) ?></h1>
+        <?php else: ?>
+          <h1 class="entry-title"><?php printf( __( 'Search: %s', 'f' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
+        <?php endif; ?>
       </header>
-
-      <?php get_template_part( 'loop', 'blog' ); ?>
-
-    </div><!-- flawless_module_class() -->
-
-  </div>
-
-  <?php flawless_widget_area( 'right_sidebar' ); ?>
+      <?php } ?>  
+    </div>   
+    
+    <?php if(! have_posts() ): ?>
+    
+    <?php endif; ?>
+    <?php get_template_part( 'loop', 'blog' ); ?>
+  
+  </div>   
+  
+  <?php flawless_widget_area('right_sidebar'); ?>
 
 </div>
 
-<?php get_footer(); ?>
+<?php get_footer() ?>

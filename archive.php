@@ -20,34 +20,38 @@
 
 <?php get_template_part('attention', 'archive'); ?>
 
-<div class="<?php flawless_wrapper_class(); ?>">
+<div id="content" class="<?php flawless_wrapper_class(); ?>">
 
   <?php flawless_widget_area('left_sidebar'); ?>
 
-  <div class="<?php flawless_block_class( 'main cfct-block' ); ?>">
-    <div class="<?php flawless_module_class( 'archive-hentry' ); ?>">
+  <div class="main column-block">
+    <div class="archive-hentry column-module">
 
-      <?php do_action( 'flawless_ui::above_header' ); ?>
+      <header class="archive entry-title-wrapper">
 
-      <header class="entry-title-wrapper">
         <?php flawless_breadcrumbs(); ?>
-        <?php flawless_page_title(); ?>
 
-        <?php if( term_description() != '' ) { ?>
+        <?php if(!hide_page_title()) { ?>
+          <h1 class="entry-title"><?php echo single_term_title( '', false ) ? single_term_title( '', false ) : get_queried_object()->label; ?></h1>
+        <?php } ?>
+
+        <?php if(category_description() != '') { ?>
           <div class="category_description">
-            <?php echo get_term_attachment_image(); ?>
-            <?php echo do_shortcode( term_description() ); ?>
+            <?php echo category_description(); ?>
           </div>
         <?php } ?>
+
       </header>
 
-      <div class="loop loop-blog post-listing clearfix">
-      <?php get_template_part( 'loop', 'blog' ); ?>
-      </div>
+    <?php /* Display any objects matched by taxonomy*/ do_shortcode('[property_overview]'); ?>
+
+    <div class="loop loop-blog post-listing cf">
+    <?php get_template_part( 'loop', 'blog' ); ?>
+    </div>
 
     </div> <?php /* .archive-hentry */ ?>
 
-  </div> <?php /* .main.cfct-block */ ?>
+  </div> <?php /* .main.column-block */ ?>
 
   <?php flawless_widget_area('right_sidebar'); ?>
 

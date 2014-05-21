@@ -38,7 +38,7 @@ if (!defined('CF_TEMPLATE_LANDING_VERSION')) {
 	
 	load_plugin_textdomain('cf-tax-landing');
 	
-	include( 'functions/cftl-post-type.php' );
-	include( 'functions/cftl-intercept-queries.php' );
+	include('functions/cftl-post-type.php');
+	include('functions/cftl-intercept-queries.php');
 } // End CF_TEMPLATE_LANDING_VERSION check
 

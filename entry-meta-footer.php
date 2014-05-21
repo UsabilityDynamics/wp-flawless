@@ -1,29 +1,13 @@
 <?php
 /**
- * Entry Footer: Displays associated taxonomies and comments informaiton.
- *
- * Entry Template Parts:
- * - entry-meta-header
- * - entry-content
- * - entry-meta-footer
- *
- * $post arguments:
- * - show_title
- * - show_thumbnail
- * - show_meta_header
- * - show_post_excerpt
- * - show_post_content
- * - show_meta_footer
+ * Displays Entry Meta on single pages, below the content.
  *
  * @package Flawless
- * @since Flawless 0.6.0
+ * @since Flawless 3.0
+ *
  */
 
-  if( !isset( $post->show_meta_footer ) ) {
-    $post->show_meta_footer = true;
-  }
-
-  if($flawless['post_types'][$post->post_type]['show_post_meta'] == 'true') {
+  if($fs['post_types'][$post->post_type]['show_post_meta'] == 'true') {
 
     if(get_the_category_list()) {
       $meta_html[] = '<li class="posted-in">' . __('Categories: ', 'flawless') . get_the_category_list(', ') . '</li>';
@@ -37,4 +21,9 @@
   if(empty($meta_html)) {
     return;
   }
+  
 ?>
+
+<ul class="entry-meta footer">
+  <?php echo implode('', $meta_html); ?>
+</ul>

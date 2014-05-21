@@ -288,4 +288,13 @@ class cfct_multi_block_c4_1234 extends cfct_multi_block {
 	}
 }
 
+/* Quarters */
+/* @todo Should be moved into carrington.php - potanin@UD */
+class cfct_block_c8_12 extends cfct_block {
+	public function __construct($classes = array()) {
+		$this->add_classes(array('c8-12'));
+		parent::__construct($classes);
+	}
+}
+
 ?>

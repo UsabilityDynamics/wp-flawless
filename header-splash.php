@@ -23,4 +23,4 @@
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-  <div class="content_container clearfix">
+  <div class="content_container cf">
