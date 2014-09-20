@@ -1,0 +1,572 @@
+/**
+ * Color Palette: Default Flawless Skin
+ * Description: Core layout, widths and grids.
+ *	Author: UsabilityDynamics.com
+ *	Version: 1.0
+ *	Tags: blark, maroon, gray
+ *
+ *  Description: Handles some core layouts and colors.  Matches up Carrington Build layouts with non-CB layouts.
+ *
+ * .non_carrington_layout body class is added even when Carrington Build is not installed at all.
+ *
+ *  .column-block elements do not have margins since they have fluid widths. .column-module are interior elements that have margins depending on their placement
+ *  All Widgets and Modules are generally identical and are matched up in this file.
+ *
+ */
+
+
+/**
+ *  CSS for Screen and Print
+ *
+ *  All static widths should be placed here.
+ *
+ */
+@media screen, print {
+
+  .container {
+    max-width: 1090px;
+    width: auto;
+  }
+
+  /* Blocks have widths.*/
+  .cfct-block,
+  .column-block {
+    display:inline;
+    float:left;
+    min-height: 1px;
+    overflow: hidden;
+  }
+
+  /* Modules / Widgets have margins. */
+  .column-module,
+  .cfct-module {
+    margin-right: 15px;
+    margin-left: 15px;
+    clear: both;
+  }
+
+  .column-block > .post_listing_inner {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Column Layout: Left sidebar never has marin, and Main block has no margin when no left sidebar */
+  div.sidebar.sidebar-left .column-module,
+  body.no-sidebar-left .column-block.main > .column-module {
+    margin-left: 0px;
+  }
+
+  /* Column Layout: Right sidebar never has margin, and Main block has no right margin when no right sidebar */
+  div.sidebar.sidebar-right .column-module,
+  body.no-sidebar-right .column-block.main > .column-module {
+    margin-right: 0px;
+  }
+
+  .hentry.column-module {
+    margin: 0;
+  }
+
+  /* List handling for within content / rich text area */
+  .non_carrington_layout .entry-content ul,
+  .non_carrington_layout .entry-content ol,
+  .carrington_layout .cfct-html ol,
+  .carrington_layout .cfct-html ul,
+  .carrington_layout .cfct-rich-text ul,
+  .carrington_layout .cfct-rich-text ol {
+    margin: 0 0 18px 25px;
+    list-style: disc outside none;
+  }
+
+  /* Modules/Widgets - General List Wrappers */
+  .cfct-module ul
+  .cfct-module ol,
+  .widget ul,
+  .widget ol {
+    margin-left: 10px;
+  }
+
+  /* Modules/Widgets - All List Items */
+  .cfct-module li,
+  .widget li {
+
+  }
+
+  /* Modules/Widgets - List inner elements */
+  .cfct-module ul > li > ul,
+  .cfct-module ol > li > ol,
+  .widget ul > li > ul,
+  .widget ol > li > ol {
+    margin-left: 10px;
+  }
+
+  .cfct-pullquote {
+    padding-left: 0;
+  }
+
+  .c6-56 .cfct-mod-title,
+  .widgettitle,
+  .widgettitle a,
+  .widget-title,
+  .widget-title a {
+    font-size: 20px;
+    margin-bottom: 3px;
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
+  hr.cfct-div-solid {
+    margin: 0;
+  }
+
+  p.center_align {
+    text-align: center;
+  }
+
+  /*.non_carrington_layout .entry-content p:last-child,
+  .cfct-module.cfct-rich-text .cfct-mod-content p:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }*/
+
+  body.carrington_layout .flawless-smooth-box .cfct-mod-image.cfct-image-center {
+    margin: 0 auto 20px auto;
+    display: block;
+  }
+
+  body.carrington_layout .flawless-smooth-box {
+    background-image: -moz-linear-gradient(center bottom , rgba(248, 248, 248, 0.27) 39%, rgba(255, 255, 255, 0.29) 70%);
+    border: 4px solid rgba(187, 187, 187, 0.15);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.19);
+    margin: 10px 10px 10px 5px;
+    padding: 15px;
+  }
+
+  body.carrington_layout .flawless-smooth-box .callout-text-content {
+    font: 15px/23px "Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif;
+  }
+
+  .general_header_wrapper .header_search_wrapper  {
+    float: right;
+  }
+
+  .menu-top-navigation-container {
+    float: right;
+    clear: right;
+  }
+
+  .header-nav.flawless-menu li.top_level_item {
+    display: block;
+    float: left;
+    margin-left: 2em;
+    text-align: right;
+  }
+
+  .header-nav.flawless-menu li.top_level_item a {
+    color: #636363;
+    font-size: 19px;
+    display: block;
+  }
+
+  .header-nav.flawless-menu li.top_level_item .menu_item_description {
+    color: #A0A0A0;
+    display: block;
+    font-size: 12px;
+    line-height: 1.2em;
+    padding-top: 5px;
+    max-width: 11em;
+  }
+
+  .header-nav.flawless-menu ul.sub-menu {
+    display: none;
+  }
+
+ div.footer  {
+    background-color: #E4E4E4;
+  }
+
+ div.footer  .flawless_footer_copyright {
+    text-align: center;
+  }
+
+ .menu-bottom-navigation-container {
+      text-align: left;
+  }
+
+ .menu-bottom-navigation-container .flawless-menu {
+      list-style: none;
+  }
+
+ .menu-bottom-navigation-container .flawless-menu > li.menu-item {
+    float: left;
+    width: 20%;
+  }
+
+ .menu-bottom-navigation-container .flawless-menu > li.top_level_item > a {
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+ .menu-bottom-navigation-container .flawless-menu .sub_menu_level_item > a {
+    font-size: 0.8em;
+    font-weight: bold;
+ }
+
+ .menu-bottom-navigation-container .flawless-menu .menu_item_description {
+    display: inline;
+    font-size: 0.7em;
+  }
+
+  .flawless_header_expandable_sections {
+    background-color: #EBEBEB;
+  }
+
+  .dropdown_header_login {
+    padding: 10px 0;
+    margin: 0;
+  }
+
+  .navbar-fixed-top .flawless_login_form  {
+    margin:  5px 0 0 0;
+  }
+
+  .navbar-fixed-top .flawless_login_form .btn  {
+    margin:  0;
+  }
+
+  .navbar-fixed-top .flawless_login_form input.user_login,
+  .navbar-fixed-top .flawless_login_form input.user_password {
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
+    border: 1px solid #111111;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.75);
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    padding: 4px 9px;
+    border-radius: 5px;
+    margin-bottom: 0;
+  }
+
+  .dropdown_header_login .flawless_login_form  {
+    padding: 0;
+    margin: 0;
+    float: right;
+  }
+
+  .dropdown_header_login .flawless_login_form input.user_login {
+    width: 18em;
+  }
+
+  .dropdown_header_login .flawless_login_form input.user_password {
+    width: 12em;
+  }
+
+  div.breadcrumbs  {
+    margin-bottom: 0.5em;
+  }
+
+  /**
+   *  Primary container for notifications
+   *  Should have to paddings or margins since may be empty.
+   *  Internal elements will have a class of .alert
+   */
+  .container.primary_notice_container {
+  }
+
+  .container.primary_notice_container .alert {
+    margin-top: 15px;
+  }
+
+  /* Single Item in Post Listing */
+  .post-listing .hentry {
+    margin-left: 0; /* To unset .column-module left margin */
+  }
+
+  .post-listing .hentry .post_listing_inner {
+    margin-bottom: 15px;
+  }
+
+  /* Loop Styles */
+  .post-listing .entry-thumbnail  {
+    float: left;
+    margin-right: 10px;
+  }
+
+  .cfct-module-loop .entry-thumbnail {
+    padding: 10px;
+    position: relative;
+  }
+
+  .status_container {
+    border-bottom: 1px dashed #D0D0D0;
+    color: #8F8F8F;
+    margin-bottom: 10px;
+  }
+
+  /* Dynamic Filter Styles */
+  .dynamic_filter .result_row {
+    background: none repeat scroll 0 0 #FFFFFF;
+    margin-bottom: 5px;
+    padding: 6px 10px;
+  }
+
+  .dynamic_filter .result_row:hover {
+    background-color: #FCFCFC
+  }
+
+  .dynamic_filter ul.result_data {
+    margin-bottom: 0;
+  }
+
+  .dynamic_filter ul.result_data li.topic_title {
+    float: left;
+    font-size: 1.2em;
+    width: 440px;
+    color: #939393;
+  }
+
+  .dynamic_filter ul.result_data li.topic_last_poster_name {
+    float: right;
+    width: 200px;
+  }
+
+  .inputs_list_wrapper {
+    margin-right: 15px;
+  }
+
+  .inputs_list_wrapper .filter_usage_count {
+    color: #878787;
+    margin-left: 3px;
+  }
+
+  .inputs_list_wrapper .filter_item_wrapper.disabled_item {
+    opacity: 0.4;
+  }
+
+  .inputs_list_wrapper .filter_usage_count:after {
+    content: ")";
+  }
+
+  .inputs_list_wrapper .filter_usage_count:before {
+    content: "(";
+  }
+
+  .item-body,
+  .item-header {
+    background-color: #FFF;
+    padding: 15px;
+  }
+
+  .item-header {
+    border: 1px solid #DDDDDD;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+
+  .item-body {
+    border: 1px solid #DDDDDD;
+    border-radius: 0 5px 5px 5px;
+    min-height: 10em;
+  }
+
+  .item-body .primary-item {
+    border-bottom: 1px solid #DADADA;
+    margin: -15px -20px 15px -15px;
+    padding: 15px;
+  }
+
+  .item-body .primary-item form {
+    margin-bottom: 0;
+  }
+
+
+  .item-header .item-header-avatar {
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 15px;
+  }
+
+  .item-header .item-header-avatar img.avatar {
+    display: block;
+  }
+
+  .item-header .header-title {
+    margin-bottom: 0;
+  }
+
+  .item-header .header-title a {
+    color: #333333;
+  }
+
+  .item-header .user-nicename {
+    display: block;
+    margin-bottom: 15px;
+  }
+
+  .item-header .header-note {
+    color: #999999;
+  }
+
+  .item-header .item-meta {
+    padding-left: 15px;
+    width: 200px;
+  }
+
+  .item-header span.group_type,
+  .item-header span.activity {
+    color: #999999;
+    background: transparent;
+    padding: 0;
+    font-weight: normal;
+  }
+
+  /* Topic and Group Member listing */
+  .item-body .item-list {
+
+  }
+
+  /* Groups and Member listing */
+  .dir-list .item-list {
+
+  }
+
+  .single_post {
+    border-bottom: 1px solid #E0E0E0;
+    margin-bottom: 15px;
+  }
+
+  .single_post .post-content {
+    margin-bottom: 15px;
+  }
+
+  .poster-meta {
+    float: right;
+    width: 300px;
+    margin-bottom: 15px;
+  }
+
+  .poster-meta img.avatar {
+    float: left;
+    margin-right: 10px;
+  }
+
+  .poster-meta span.time_since,
+  .poster-meta a.poster_name {
+    display: block;
+  }
+
+  .poster-meta span.time_since {
+    font-size: 0.8em;
+  }
+
+
+  /* Emulate TB Pills */
+  .item-list-tabs .nav-pills > li > a,
+  .item-list-tabs .nav-pills > li > span {
+    border-radius: 5px 5px 5px 5px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    line-height: 14px;
+    margin-right: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+    display: block;
+  }
+
+  .item-list-tabs .nav-pills > li.current > a {
+    background-color: #0088CC;
+    color: #FFFFFF;
+  }
+
+  .pagination a {
+    border-color: transparent;
+  }
+
+}
+
+/**
+ *  CSS for Screen Only
+ *
+ *  All static widths should be placed here.
+ *
+ */
+@media screen {
+
+  /* Masonry: single item wrapper */
+  .listing-masonry.item-list,
+  .listing-masonry .post-listing {
+    margin-left: 0px;
+    margin-right: 0px;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  /* Masonry: single item */
+  .listing-masonry .column-block {
+    width: 49%;
+  }
+
+  /* Masonry: Inner content of single item */
+  .listing-masonry .column-module {
+    margin: 0 15px 10px 0px;
+  }
+
+  ul.content_tabs.nav-tabs {
+    margin-bottom: 0;
+  }
+
+  .nav-tabs > li > a {
+
+  font-size: 16px;
+  font-weight: bold;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  border-radius: 5px 5px 0 0;
+
+  }
+
+  div.content_tabs.tab-content {
+    background-color: #FFF;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tabbed_columns  {
+    margin-bottom: 15px;
+  }
+
+  .tabbed_columns .cfct-block {
+    width: 100%;
+  }
+
+  .tabbed_columns .cfct-block .cfct-module {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  textarea {
+    max-width: 100%;
+  }
+
+
+}
+
+/**
+ *  CSS for print Only
+ *
+ *  All static widths should be placed here.
+ *
+ */
+@media print {
+
+}
+

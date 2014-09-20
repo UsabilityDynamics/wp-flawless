@@ -1,0 +1,1 @@
+[22-Jan-2014 08:14:34 America/New_York] PHP Fatal error:  Call to undefined function get_header() in /home/ud/public_html/production/wp-content/themes/flawless-0.3.6/404.php on line 19

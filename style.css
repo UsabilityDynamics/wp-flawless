@@ -1,0 +1,408 @@
+/**
+ * Theme Name: Flawless
+ * Theme URI: http://usabilitydynamics.com/products/flawless
+ * Description: A professional and customizable theme.  Customizable content types, drag-and-drop page elements and many advanced features.
+ * Version: 0.3.6
+ * Author: Usability Dynamics, Inc.
+ * Author URI: http://usabilitydynamics.com/
+ * Tags: customizable, template, framework, carrington, cms, business, carrington-build, green, blue, one-column, two-columns, three-columns, fixed-width, editor-style, threaded-comments, microformats, buddypress
+ *
+ * @package flawless
+ *
+ * Copyright (c) 2011 Usability Dynamics, Inc. All rights reserved.
+ * http://usabilitydynamics.com
+ *
+ * **********************************************************************
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * **********************************************************************
+ *
+ *  Loaded By Theme via wp_enqueue_style():
+ *  - css/bootstrap.css
+ *
+ */
+
+/* ELEMENTS THAT NEED TO BE ORGANIZED INTO LOGICAL LOCATION BEGIN { */
+
+  /* Hide "Comments are closed text." */
+  .nocomments {
+    display: none;
+  }
+
+  
+/* ELEMENTS THAT NEED TO BE ORGANIZED INTO LOGICAL LOCATION END { */
+
+/* Global CSS for Print and Screen */
+@media screen, print {
+
+  * {
+    margin:0;
+    padding:0;
+  }
+
+  .cb {
+    clear: both;
+  }
+
+  ul,
+  ol { 
+    margin-left: 0;
+    list-style-type:none;
+  }
+  
+  ul.linenums,
+  ol.linenums { 
+    margin-left: 3em;
+    list-style-type:decimal;
+  }
+  
+  .linenums li{
+      margin-bottom: 0;
+  }
+  
+  /* When a Navbar is added, we add header padding */
+  body.have-navbar {
+    padding-top: 40px;
+  }
+
+  .super_wrapper {
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .body_upper_background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 0;
+  }
+
+  .content_container,  
+  .general_header_wrapper {
+    z-index: 1;
+  }
+  
+  .general_header_wrapper,
+  .flawless_dynamic_area {
+    position: relative;
+  }
+
+  .general_header_wrapper .column-block {
+    width: auto;
+  }
+
+  .header_search form {
+    margin: 0;
+  }
+  
+  /* Helpers */
+  
+  /* div is necessary for extra specificity */
+  div.right {
+    float: right;
+  }
+  
+  /* div is necessary for extra specificity */
+  div.left {
+    float: left;
+  }
+  
+  /* div is necessary for extra specificity */
+  div.flush-left {
+    margin-left: 0;
+    padding-left: 0;
+  }  
+  
+  /* div is necessary for extra specificity */
+  div.flush-right {
+    margin-right: 0;
+    padding-right: 0;
+  }
+  
+  .flawless_module,
+  .column-block {
+    width: 100%;
+    display: inline;
+    float: left;
+    min-height: 1px;
+    overflow: hidden;
+  }
+
+  /* Wrapper individual widget areas within widget area sections, should be mostly transparent */
+  .single-widget-area {
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar .widget {
+   clear:both;
+  }
+
+  ul.flawless_dropdown_elements  {
+    list-style: none;
+  }
+
+  ul.flawless-menu,
+  ul.flawless-menu li.menu-item  {
+    margin:0 auto;
+    padding:0;
+  }
+
+  .flawless-menu .divider {
+    display: none;
+  }
+
+  ul.flawless_header_dropdown_links {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .flawless_header_expandable_sections {
+    margin: 0;
+  }
+
+  .flawless_header_expandable_sections .header_dropdown_div {
+    position: absolute;
+    left: -10000px;
+    overflow:hidden;
+    margin-bottom: 0px;
+  }
+
+  .flawless_header_expandable_sections .header_dropdown_div .widgettitle {
+    display:none;
+  }
+
+  .entry-meta {
+    margin: 0;
+  }
+
+  div.breadcrumbs {
+    margin-bottom: 0;
+  }
+
+  .widget_rss  ul li a.rsswidget {
+    font-size: 1.2em;
+  }
+
+  .widget_rss .rssSummary {
+    margin-top: 5px;
+  }
+
+  .business_card p {
+    margin-bottom: 2px;
+  }
+
+  .business_card .social_icons {
+    margin-top: 10px;
+  }
+
+  .business_card .social_icons a {
+    margin-right: 5px;
+  }
+
+  ul.wp_crm_contact_form,
+  ul.wp_crm_contact_form li {
+    list-style: none !important;
+  }
+
+  .sidebar .widget_bio p {
+    color:#5E5E5E;
+    font-weight:lighter;
+    line-height:1.6em;
+    padding:0 5px;
+  }
+
+  .sidebar .widget_twitter .entry-content {
+    font-weight:lighter;
+    line-height:1.4em;
+  }
+
+  .sidebar .widget_twitter .entry-content a {
+    color:#B16736;
+  }
+
+  .sidebar .widget_twitter .twitter-avatar {
+    float:left;
+    margin:5px;
+  }
+
+  .sidebar .widget_twitter .time-meta a,
+  .sidebar .widget_twitter .time-meta,.sidebar .widget_twitter .from-meta {
+    color:#B8B8B8;
+  }
+
+  .gallery-item {
+    display: block;
+    float: left;
+    padding-right: 15px;
+  }
+
+  body .cfct-build .hentry {
+    padding-left: 0;
+  }
+
+  body .hentry {
+    clear: both;
+  }
+
+  .entry-utility {
+    clear:both;
+  }
+
+  .option_tab {
+    background-image: none;
+    padding-left: 10px;
+  }
+
+  .dropdown_tab_login a {
+    background: none repeat scroll 0 0 transparent;
+  }
+
+  .features_list h2,
+  .wpp_stats_group {
+    font-weight: normal;
+    color: #595959;
+    clear: both;
+    display: block;
+    font-size: 1.4em;
+  }
+
+  .screen-reader-text {
+    display: none;
+  }
+
+  .cf:before,
+  .cf:after {
+      content:"";
+      display:table;
+  }
+
+  .cf:after {
+      clear:both;
+  }
+
+  .cf {
+      zoom:1;
+  }
+  
+  /* CSS Helpders */
+  .no-margin {
+    margin: 0;
+  }
+  
+  .extra-bottom-margin {
+    margin-bottom: 2em;
+  }
+
+}
+
+
+/* CSS for Screen Only */
+@media screen {
+
+  .container {
+    margin:0 auto;
+    position: relative;
+  }
+
+  .print-only {
+    display: none;
+  }
+
+  .column-block.block-66,
+  body.sidebar-left .main.column-block,
+  body.sidebar-right .main.column-block {
+    width: 66.66%;
+  }
+
+  body.sidebar-left.sidebar-right .main.column-block {
+    width: 33.33%;
+  }
+
+  .column-block.block-75 {
+    width: 75%;
+  }
+  
+  .column-block.block-70 {
+    width: 70%;
+  }
+  
+  .column-block.block-30 {
+    width: 30%;
+  }
+  
+  .column-block.block-25 {
+    width: 25%;
+  }
+  
+  .column-block.block-33,
+  .sidebar {
+    width: 33.33%;
+  }
+  
+  /* Buddypress */
+  
+  form#avatar-upload-form #upload {
+    margin-bottom: 9px;
+  } 
+
+}
+
+/** CSS for Print Only */
+@media print {
+
+  body {
+    background:white;
+    color:black;
+    margin:0;
+    padding: 0;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  a, a:visited {
+    text-decoration: none;
+  }
+
+  .column-block {
+    display: block;
+    float: left;
+  }
+
+  footer {
+    clear: both;
+  }
+
+  pre, blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  tr, img {
+    page-break-inside: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+  }
+
+  p, h2, h3 {
+    orphans: 3;
+    widows: 3; }
+
+  h2, h3 {
+    page-break-after: avoid;
+  }
+
+  .wpp_attachment_attribute_link {
+    display: none;
+  }
+
+
+}

@@ -1,0 +1,11 @@
+/**
+  * Name: WP-Property Styles
+  * Description: Extra styles for WP-Property plugin.
+  * Media: screen
+  *
+  */
+
+  
+  div.property_div ul.wpp_overview_data {
+    list-style: none;
+  }

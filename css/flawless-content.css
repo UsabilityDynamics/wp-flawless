@@ -1,0 +1,115 @@
+ /**
+  * Content Styles
+  *
+  * Shared by editor and front-end.
+  *
+  * This file contains all styles that are shared by the editor on the back-end and actually rendered on the front-end.
+ *
+ * For editor-only styles use the body.wp-editor prefix.
+ * For front-end only styles use the .entry-content prefix
+ *
+ */
+
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+}
+
+hr {
+  clear: both;
+}
+
+h1, h2, h3, h4, h5 {
+  margin-bottom: 0.5em;
+}
+
+pre {
+  clear: both;
+}
+
+.cfct-image-left,
+.alignleft {
+	display: inline;
+	float: left;
+	margin-right: 1.1em;
+}
+
+.cfct-image-right,
+.alignright {
+	display: inline;
+	float: right;
+	margin-left: 1.1em;
+}
+
+.cfct-image-center,
+.aligncenter {
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-caption {
+  background:#f1f1f1;
+  line-height:18px;
+  margin: 5px 10px 20px 10px;
+  text-align:center;
+  -moz-box-shadow:0 0 7px #A9AAA7;
+  -webkit-box-shadow:0 0 7px #A9AAA7;
+  box-shadow:0 0 7px #A9AAA7;
+  padding:4px;
+}
+
+.wp-caption.alignleft {
+  margin-right: 15px;
+}
+
+.wp-caption.alignright {
+  margin-left: 15px;
+}
+
+.wp-post-image,
+.cfct-mod-image {
+  margtin-bottom: 1.1em;
+  max-width: 100%;
+  height: auto;
+}
+
+.dropshadow {
+  -moz-box-shadow:0 0 7px #BBC68B;
+  -webkit-box-shadow:0 0 7px #BBC68B;
+  box-shadow:0 0 7px #BBC68B;
+}
+
+.slider.dropshadow,
+.slider.dropshadow_slider {
+  border: 10px solid #EDEDED;
+  margin-left: 2px; /* Left margin to compensate for the shadow */
+  box-shadow: 0 1px 9px #AAAAAA;
+}
+
+.widget_text p,
+.entry-content p {
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.entry-content dl,
+.entry-content ol {
+  margin:0 0 15px;
+}
+
+.entry-content .the_content {
+  margin-bottom: 15px;
+}
+
+.entry-content ol ol {
+  list-style-image:none;
+  list-style-position:inside;
+  list-style-type:lower-alpha;
+  margin-left:20px;
+}
+
+
