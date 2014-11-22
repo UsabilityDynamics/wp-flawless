@@ -1466,7 +1466,7 @@ class flawless_theme {
   function script_loader_src( $src, $handle ) {
     global $flawless;
 
-    if( $flawless['add_minification_args'] != 'true' ) {
+    if( !isset( $flawless['add_minification_args'] ) || $flawless['add_minification_args'] != 'true' ) {
       return $src;
     }
 
@@ -2038,7 +2038,7 @@ class flawless_theme {
     //** Run the update now in case we have a redirection */
     update_option( 'flawless_version', Flawless_Version );
 
-    if( $redirect ) {
+    if( isset( $redirect ) && $redirect ) {
       wp_redirect( $redirect );
       die();
     }
